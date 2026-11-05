@@ -1,0 +1,383 @@
+/* Page 6 — use the supplied, full-width photographic assets and transparent PNG marks. */
+.quality-page .quality-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(330px, 27vw, 430px);
+  overflow: hidden;
+  background: #f5f1e8;
+}
+
+.quality-page .quality-hero__background {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+}
+
+.quality-page .quality-hero__copy {
+  position: relative;
+  z-index: 2;
+  width: 58%;
+  padding: clamp(34px, 3.5vw, 54px) 20px clamp(30px, 3vw, 42px) var(--page-pad);
+  background: transparent;
+}
+
+.quality-page .quality-hero h1 {
+  margin: 18px 0 12px;
+  font-size: clamp(48px, 4.4vw, 70px);
+  line-height: .92;
+}
+
+.quality-page .quality-hero__copy > p:last-child {
+  max-width: 660px;
+  margin: 0;
+  font: 400 clamp(16px, 1.3vw, 19px)/1.42 var(--serif);
+}
+
+.quality-page .quality-hero__side-note {
+  z-index: 2;
+  right: 3%;
+  top: 55px;
+  max-width: 126px;
+  font-size: clamp(17px, 1.5vw, 21px);
+}
+
+/* The feature row and certification panel share the parchment asset. */
+.quality-page .quality-middle {
+  position: relative;
+  padding: 18px 0 17px;
+  background-color: #f7f2e8;
+  background-image: url('/assets/06-quality-trust/backgrounds/quality-trust-middle-background.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.quality-page .quality-features {
+  background: transparent;
+  padding-top: 0;
+  padding-bottom: 20px;
+}
+
+.quality-page .quality-features article {
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 clamp(14px, 1.8vw, 27px);
+}
+
+.quality-page .quality-feature__icon {
+  width: 72px;
+  height: 72px;
+  max-width: none;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.quality-page .quality-features h2 {
+  margin: 9px 0 7px;
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.12;
+  font-weight: 500;
+}
+
+.quality-page .quality-features p {
+  max-width: 305px;
+  font-size: clamp(13px, .98vw, 15px);
+  line-height: 1.38;
+}
+
+.quality-page .certification-band {
+  grid-template-columns: minmax(0, 38%) minmax(0, 62%);
+  gap: 0;
+  margin: 0 3.5%;
+  padding: 14px 18px;
+  border: 1px solid rgba(169, 119, 44, .24);
+  background: rgba(255, 252, 245, .54);
+}
+
+.quality-page .certification-band__intro {
+  display: grid;
+  grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
+  align-items: center;
+  gap: 18px;
+  padding: 0 22px 0 0;
+}
+
+.quality-page .certification-band__intro .eyebrow {
+  margin: 0;
+  font-size: clamp(17px, 1.3vw, 22px);
+  line-height: 1.08;
+  letter-spacing: .015em;
+}
+
+.quality-page .certification-band__intro p:last-child {
+  font-size: clamp(13px, .98vw, 15px);
+  line-height: 1.4;
+}
+
+.quality-page .certification-logos {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+}
+
+.quality-page .cert-logo {
+  min-width: 0;
+  min-height: 92px;
+  padding: 0 10px;
+  border-right: 1px solid var(--line);
+}
+
+.quality-page .cert-logo img {
+  display: block;
+  width: min(100%, 168px);
+  height: 88px;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* The photographic footer image fills the complete three-column banner. */
+.quality-page .quality-approach {
+  position: relative;
+  isolation: isolate;
+  grid-template-columns: minmax(0, 36%) minmax(0, 1fr) minmax(250px, 28%);
+  min-height: 245px;
+  background: #191714;
+}
+
+.quality-page .quality-approach__background {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+}
+
+.quality-page .quality-approach__copy,
+.quality-page .quality-approach__list {
+  position: relative;
+  z-index: 1;
+}
+
+.quality-page .quality-approach__copy {
+  grid-column: 2;
+  padding: 24px 26px;
+}
+
+.quality-page .quality-approach__copy h2 {
+  margin: 12px 0 9px;
+  font-size: clamp(27px, 2.25vw, 36px);
+  line-height: 1.02;
+}
+
+.quality-page .quality-approach__copy > p:last-child {
+  max-width: 560px;
+  font-size: clamp(13px, .98vw, 15px);
+  line-height: 1.42;
+}
+
+.quality-page .quality-approach__list {
+  grid-column: 3;
+  gap: 8px;
+  padding: 18px var(--page-pad) 18px 12px;
+}
+
+.quality-page .quality-approach__list span {
+  min-height: 38px;
+  gap: 10px;
+  font-size: clamp(12px, .95vw, 14px);
+  line-height: 1.2;
+}
+
+.quality-page .quality-approach__list img {
+  width: 38px;
+  height: 38px;
+  max-width: none;
+  object-fit: contain;
+  flex: 0 0 38px;
+}
+
+/* Tablet */
+@media (max-width: 980px) {
+  .quality-page .quality-hero__copy {
+    width: 64%;
+  }
+
+  .quality-page .quality-middle {
+    padding-top: 16px;
+  }
+
+  .quality-page .certification-band {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .quality-page .certification-band__intro {
+    grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr);
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 12px;
+  }
+
+  .quality-page .quality-approach {
+    grid-template-columns: 31% minmax(0, 1fr);
+  }
+
+  .quality-page .quality-approach__copy {
+    grid-column: 2;
+  }
+
+  .quality-page .quality-approach__list {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 12px 24px 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .quality-page .quality-hero {
+    display: block;
+    min-height: 0;
+  }
+
+  .quality-page .quality-hero__background {
+    object-position: 68% center;
+  }
+
+  .quality-page .quality-hero__copy {
+    width: 100%;
+    padding: 30px 20px 27px;
+    background: linear-gradient(90deg, rgba(245, 241, 232, .97) 0%, rgba(245, 241, 232, .9) 68%, rgba(245, 241, 232, .46) 100%);
+  }
+
+  .quality-page .quality-hero h1 {
+    font-size: clamp(42px, 11vw, 55px);
+  }
+
+  .quality-page .quality-hero__copy > p:last-child {
+    max-width: 570px;
+    font-size: 15px;
+  }
+
+  .quality-page .quality-hero__side-note {
+    display: none;
+  }
+
+  .quality-page .quality-middle {
+    padding: 10px 0 14px;
+  }
+
+  .quality-page .quality-features {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 8px 12px 14px;
+  }
+
+  .quality-page .quality-features article {
+    padding: 13px 10px;
+  }
+
+  .quality-page .quality-features article + article {
+    border-left: 0;
+  }
+
+  .quality-page .quality-features article:nth-child(even) {
+    border-left: 1px solid var(--line);
+  }
+
+  .quality-page .quality-features article:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+
+  .quality-page .quality-feature__icon {
+    width: 58px;
+    height: 58px;
+  }
+
+  .quality-page .quality-features h2 {
+    font-size: 14px;
+  }
+
+  .quality-page .quality-features p {
+    font-size: 11px;
+  }
+
+  .quality-page .certification-band {
+    margin: 0 12px;
+    padding: 13px;
+  }
+
+  .quality-page .certification-band__intro {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .quality-page .certification-band__intro .eyebrow {
+    font-size: 18px;
+  }
+
+  .quality-page .certification-logos {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .quality-page .cert-logo {
+    min-height: 72px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .quality-page .cert-logo:nth-child(even) {
+    border-right: 0;
+  }
+
+  .quality-page .cert-logo:nth-child(n + 3) {
+    border-bottom: 0;
+  }
+
+  .quality-page .cert-logo img {
+    width: min(100%, 145px);
+    height: 70px;
+  }
+
+  .quality-page .quality-approach {
+    display: block;
+    min-height: 0;
+  }
+
+  .quality-page .quality-approach__background {
+    object-position: 30% center;
+  }
+
+  .quality-page .quality-approach__copy {
+    padding: 22px 20px 16px;
+  }
+
+  .quality-page .quality-approach__copy h2 {
+    font-size: 28px;
+  }
+
+  .quality-page .quality-approach__list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 12px;
+    padding: 8px 20px 20px;
+  }
+
+  .quality-page .quality-approach__list span {
+    font-size: 11px;
+  }
+
+  .quality-page .quality-approach__list img {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+  }
+}

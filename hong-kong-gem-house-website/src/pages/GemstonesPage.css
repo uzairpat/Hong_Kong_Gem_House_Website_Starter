@@ -1,0 +1,452 @@
+.gemstones-page {
+  --gem-gold: #b27a2c;
+  --gem-gold-light: #d8ae68;
+  --gem-ink: #201b16;
+  --gem-ivory: #f5f0e6;
+  --gem-serif: "Cormorant Garamond", "Times New Roman", serif;
+  --gem-body: "Lora", Georgia, serif;
+  width: 100%;
+  overflow: clip;
+  color: var(--gem-ink);
+  background: var(--gem-ivory);
+  font-family: var(--gem-body);
+}
+
+.gemstones-page *,
+.gemstones-page *::before,
+.gemstones-page *::after { box-sizing: border-box; }
+
+.gemstones-page img { display: block; }
+
+.gemstone-image-fallback {
+  background: linear-gradient(135deg, #eee6d7, #d9c9ae 52%, #f5efe5);
+}
+
+/* HERO — one continuous ivory-to-gemstone background */
+.gemstones-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(270px, 18.5vw, 360px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #f3eee4;
+}
+
+.gemstones-hero__background {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+/* Keep the supplied hero photograph at its original colours. */
+.gemstones-hero::after {
+  content: none;
+  display: none;
+}
+
+.gemstones-hero__content {
+  width: min(49%, 770px);
+  margin-left: clamp(32px, 4.6vw, 88px);
+  padding: 32px 0 34px;
+}
+
+.gemstones-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 15px;
+  color: #17130f;
+  font-family: var(--gem-body);
+  font-size: clamp(11px, .88vw, 15px);
+  font-weight: 500;
+  letter-spacing: .24em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.gemstones-eyebrow i {
+  display: block;
+  width: clamp(90px, 10vw, 180px);
+  height: 1px;
+  background: var(--gem-gold);
+}
+
+.gemstones-hero h1 {
+  margin: 0;
+  color: var(--gem-ink);
+  font-family: var(--gem-serif);
+  font-size: clamp(40px, 3.9vw, 70px);
+  font-weight: 500;
+  letter-spacing: -.035em;
+  line-height: .94;
+  text-transform: uppercase;
+}
+
+.gemstones-hero h1 span,
+.gemstones-hero h1 strong { display: block; }
+.gemstones-hero h1 span { color: #a16b25; }
+.gemstones-hero h1 strong { margin-top: 5px; font-weight: 500; }
+
+.gemstones-hero__content > p {
+  max-width: 640px;
+  margin: 17px 0 0;
+  color: #29231c;
+  font-family: var(--gem-body);
+  font-size: clamp(14px, .98vw, 17px);
+  font-weight: 400;
+  line-height: 1.48;
+}
+
+/* COLLECTION CARDS — no heavy cards, use quiet columns and dividers */
+.gemstone-collections {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(18px, 1.25vw, 24px) clamp(28px, 4.2vw, 80px) clamp(24px, 2vw, 34px);
+  background: #f5f0e6;
+}
+
+.gemstone-collections__background {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: .72;
+}
+
+.gemstone-collections__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: 1760px;
+  margin: 0 auto;
+}
+
+.gemstone-collection {
+  min-width: 0;
+  padding: 0 clamp(14px, 1.25vw, 24px);
+  display: flex;
+  flex-direction: column;
+}
+
+.gemstone-collection:first-child { padding-left: 0; }
+.gemstone-collection:last-child { padding-right: 0; }
+.gemstone-collection + .gemstone-collection {
+  border-left: 1px solid rgba(171, 124, 57, .28);
+}
+
+.gemstone-collection__image {
+  width: 100%;
+  aspect-ratio: 1.95 / 1;
+  object-fit: cover;
+  object-position: center;
+  background: #211b18;
+}
+
+.gemstone-collection__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding-top: 10px;
+}
+
+.gemstone-collection__title-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+.gemstone-collection__title-row h2 {
+  flex: 0 0 auto;
+  margin: 0;
+  color: #17130f;
+  font-family: var(--gem-serif);
+  font-size: clamp(19px, 1.45vw, 27px);
+  font-weight: 600;
+  letter-spacing: .015em;
+  line-height: 1.08;
+  text-transform: uppercase;
+}
+
+.gemstone-collection__title-row > span {
+  flex: 1;
+  min-width: 10px;
+  height: 1px;
+  margin-top: 4px;
+  background: rgba(174, 120, 44, .54);
+}
+
+.gemstone-collection__descriptor {
+  margin: 8px 0 0;
+  color: #96682c;
+  font-family: var(--gem-body);
+  font-size: clamp(9px, .62vw, 11px);
+  font-weight: 500;
+  letter-spacing: .095em;
+  line-height: 1.45;
+}
+
+.gemstone-collection__description {
+  margin: 9px 0 15px;
+  color: #30291f;
+  font-family: var(--gem-body);
+  font-size: clamp(12px, .84vw, 14px);
+  font-weight: 400;
+  line-height: 1.42;
+}
+
+.gemstone-collection__link {
+  width: fit-content;
+  min-width: min(100%, 190px);
+  min-height: 38px;
+  margin-top: auto;
+  padding: 7px 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border: 1px solid #aa762e;
+  color: #292117;
+  background: rgba(255, 252, 246, .35);
+  font-family: var(--gem-serif);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .035em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color .2s ease, background .2s ease, border-color .2s ease;
+}
+
+.gemstone-collection__link span:last-child {
+  color: #a8752e;
+  font-family: Arial, sans-serif;
+  font-size: 21px;
+  line-height: 1;
+  transition: transform .2s ease;
+}
+
+.gemstone-collection__link:hover {
+  color: #fffaf1;
+  border-color: #a8752e;
+  background: #a8752e;
+}
+.gemstone-collection__link:hover span:last-child { color: #fffaf1; transform: translateX(4px); }
+
+/* COMMITMENT — single full-width photographic banner */
+.gemstones-commitment {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(250px, 15.5vw, 300px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: #f7eedf;
+  background: #11100e;
+}
+
+.gemstones-commitment__background {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  filter: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+/* Keep the supplied commitment photograph at its original colours. */
+.gemstones-commitment::after {
+  content: none;
+  display: none;
+}
+
+.gemstones-commitment__content {
+  width: min(61%, 1100px);
+  padding: 22px 0 22px clamp(32px, 4.2vw, 80px);
+}
+
+.gemstones-eyebrow--light {
+  margin-bottom: 12px;
+  color: #e7c58b;
+  font-size: clamp(10px, .78vw, 13px);
+}
+.gemstones-eyebrow--light i { background: #a87a3b; }
+
+.gemstones-commitment__content > h2 {
+  margin: 0;
+  color: #e7c58b;
+  font-family: var(--gem-serif);
+  font-size: clamp(27px, 2.15vw, 40px);
+  font-weight: 500;
+  letter-spacing: .015em;
+  line-height: .98;
+  text-transform: uppercase;
+}
+
+.gemstones-commitment__features {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 20px;
+}
+
+.gemstones-feature {
+  min-width: 0;
+  padding: 0 clamp(10px, 1vw, 18px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.gemstones-feature:first-child { padding-left: 0; }
+.gemstones-feature + .gemstones-feature { border-left: 1px solid rgba(213, 167, 92, .45); }
+
+.gemstones-feature__icon {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 7px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.gemstones-feature h3 {
+  margin: 0 0 5px;
+  color: #f1d39c;
+  font-family: var(--gem-serif);
+  font-size: clamp(12px, .9vw, 16px);
+  font-weight: 600;
+  line-height: 1.08;
+  text-transform: uppercase;
+}
+
+.gemstones-feature p {
+  max-width: 180px;
+  margin: 0;
+  color: #f4eee5;
+  font-family: var(--gem-body);
+  font-size: clamp(10px, .72vw, 12px);
+  line-height: 1.35;
+}
+
+.gemstones-commitment__quote {
+  width: clamp(220px, 14vw, 250px);
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 62%;
+  transform: translateY(-50%);
+  color: #e9c68c;
+  font-family: var(--gem-serif);
+  font-size: clamp(19px, 1.35vw, 25px);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.14;
+  text-align: left;
+  text-wrap: pretty;
+}
+
+.gemstones-commitment__quote span {
+  display: block;
+  width: 48px;
+  height: 1px;
+  margin-top: 17px;
+  background: #b78a4b;
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+  .gemstones-hero { min-height: 320px; }
+  .gemstones-hero__content { width: 54%; }
+  .gemstone-collections { padding-right: 28px; padding-left: 28px; }
+  .gemstone-collections__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
+  .gemstone-collection { padding: 0 18px; }
+  .gemstone-collection:nth-child(odd) { padding-left: 0; }
+  .gemstone-collection:nth-child(even) { padding-right: 0; }
+  .gemstone-collection:nth-child(3) { border-left: 0; }
+  .gemstones-commitment { min-height: 350px; }
+  .gemstones-commitment__content { width: 72%; padding-top: 20px; padding-bottom: 20px; }
+  .gemstones-commitment__quote { left: auto; right: 4%; width: 20%; }
+}
+
+
+@media (min-width: 1101px) and (max-width: 1450px) {
+  .gemstones-commitment__content { width: 63%; }
+  .gemstones-commitment__quote { left: 64%; width: 190px; font-size: 18px; }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .gemstones-hero {
+    min-height: 0;
+    align-items: flex-end;
+    padding-top: 205px;
+    background: #f3eee4;
+  }
+  .gemstones-hero__background {
+    height: 245px;
+    object-position: 68% center;
+    object-fit: cover;
+  }
+  .gemstones-hero::after { display: none; }
+  .gemstones-hero__content {
+    width: 100%;
+    margin: 0;
+    padding: 18px 22px 25px;
+  }
+  .gemstones-eyebrow { gap: 12px; margin-bottom: 13px; font-size: 10px; }
+  .gemstones-eyebrow i { width: 70px; }
+  .gemstones-hero h1 { font-size: clamp(36px, 10vw, 50px); }
+  .gemstones-hero__content > p { margin-top: 14px; font-size: 13px; line-height: 1.5; }
+
+  .gemstone-collections { padding: 22px 20px 28px; }
+  .gemstone-collections__grid { grid-template-columns: 1fr; row-gap: 24px; }
+  .gemstone-collection,
+  .gemstone-collection:first-child,
+  .gemstone-collection:last-child,
+  .gemstone-collection:nth-child(odd),
+  .gemstone-collection:nth-child(even) { padding: 0; border-left: 0; }
+  .gemstone-collection + .gemstone-collection { padding-top: 22px; border-top: 1px solid rgba(171,124,57,.35); }
+  .gemstone-collection__image { aspect-ratio: 1.8 / 1; }
+  .gemstone-collection__title-row h2 { font-size: 25px; }
+  .gemstone-collection__descriptor { font-size: 10px; }
+  .gemstone-collection__description { margin-bottom: 14px; font-size: 13px; }
+  .gemstone-collection__link { width: 100%; min-height: 42px; }
+
+  .gemstones-commitment {
+    min-height: 0;
+    display: block;
+    padding: 28px 20px 235px;
+    background: #11100e;
+  }
+  .gemstones-commitment__background {
+    height: 100%;
+    object-position: 74% bottom;
+  }
+  .gemstones-commitment::after { display: none; }
+  .gemstones-commitment__content { width: 100%; padding: 0; }
+  .gemstones-commitment__content > h2 { font-size: clamp(27px, 8vw, 36px); }
+  .gemstones-commitment__features { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 0; margin-top: 23px; }
+  .gemstones-feature { padding: 0 12px; }
+  .gemstones-feature:nth-child(odd) { padding-left: 0; }
+  .gemstones-feature:nth-child(even) { border-left: 1px solid rgba(213,167,92,.45); }
+  .gemstones-feature__icon { width: 43px; height: 43px; }
+  .gemstones-feature h3 { font-size: 14px; }
+  .gemstones-feature p { font-size: 11px; }
+  .gemstones-commitment__quote { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gemstone-collection__link,
+  .gemstone-collection__link span:last-child { transition: none; }
+}

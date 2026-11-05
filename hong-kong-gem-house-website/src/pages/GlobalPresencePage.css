@@ -1,0 +1,655 @@
+/* Page 7 — Global Presence. All selectors are scoped to .global-page. */
+.global-page {
+  --global-ivory: #f7f2e9;
+  --global-ivory-light: #fbf8f1;
+  --global-gold: #a9772c;
+  --global-gold-light: #d7ad66;
+  --global-ink: #1d1a16;
+  width: 100%;
+  color: var(--global-ink);
+  background: var(--global-ivory);
+  font-family: var(--serif, 'Cormorant Garamond', Georgia, serif);
+}
+
+.global-page,
+.global-page *,
+.global-page *::before,
+.global-page *::after {
+  box-sizing: border-box;
+}
+
+/* HERO: cover keeps the original map artwork in proportion instead of stretching it. */
+.global-page .global-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 48%) minmax(0, 52%);
+  align-items: stretch;
+  width: 100%;
+  height: clamp(320px, 20vw, 360px);
+  min-height: 320px;
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #21180f;
+  background-image: url('/assets/07-global-presence/background/global-hero-background.png');
+  background-position: center 48%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.global-page .global-hero__copy {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  align-self: center;
+  width: 100%;
+  min-width: 0;
+  padding: 30px 18px 30px clamp(48px, 4.5vw, 78px);
+}
+
+.global-page .global-hero__eyebrow,
+.global-page .global-reach__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+.global-page .global-hero__eyebrow {
+  color: #211d18;
+}
+
+.global-page .global-hero__eyebrow::after,
+.global-page .global-reach__eyebrow::after {
+  content: '';
+  display: block;
+  width: clamp(90px, 15vw, 215px);
+  height: 1px;
+  background: #b8853e;
+}
+
+.global-page .global-hero h1 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 100%;
+  margin: 16px 0 9px;
+  font-family: var(--serif, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(42px, 3.3vw, 57px);
+  font-weight: 500;
+  line-height: .99;
+  letter-spacing: -.045em;
+  text-transform: uppercase;
+}
+
+.global-page .global-hero__title-gold,
+.global-page .global-hero__title-dark {
+  display: block;
+  white-space: nowrap;
+}
+
+.global-page .global-hero__title-gold {
+  color: var(--global-gold);
+}
+
+.global-page .global-hero__title-dark {
+  color: #171512;
+  font-size: .91em;
+  letter-spacing: -.05em;
+}
+
+.global-page .global-hero__description {
+  max-width: 700px;
+  margin: 0;
+  color: #201d18;
+  font-size: clamp(15px, 1.05vw, 18px);
+  font-weight: 400;
+  line-height: 1.32;
+}
+
+.global-page .global-hero__side-note {
+  position: absolute;
+  z-index: 2;
+  top: 36px;
+  right: clamp(28px, 3.2vw, 52px);
+  width: 126px;
+  color: #e5bd78;
+  font-family: var(--serif, 'Cormorant Garamond', Georgia, serif);
+  text-transform: uppercase;
+}
+
+.global-page .global-hero__side-title {
+  display: block;
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.08;
+}
+
+.global-page .global-hero__side-rule {
+  display: block;
+  width: 54px;
+  height: 1px;
+  margin: 15px 0 17px;
+  background: #dfb56d;
+}
+
+.global-page .global-hero__side-caption {
+  display: block;
+  color: #f5ecdc;
+  font-size: 13px;
+  line-height: 1.42;
+  letter-spacing: .16em;
+}
+
+/* LOCATION PANELS: consistent image ratio, shared body structure and aligned icon rows. */
+.global-page .global-locations {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  width: 100%;
+  padding: 16px clamp(28px, 3.5vw, 55px) 19px;
+  background: var(--global-ivory-light);
+}
+
+.global-page .global-location {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0 18px;
+  background: transparent;
+}
+
+.global-page .global-location:first-child {
+  padding-left: 0;
+}
+
+.global-page .global-location:last-child {
+  padding-right: 0;
+}
+
+.global-page .global-location + .global-location {
+  border-left: 1px solid rgba(169, 119, 44, .32);
+}
+
+.global-page .global-location__photo {
+  display: block;
+  width: 100%;
+  height: clamp(142px, 10.4vw, 164px);
+  flex: 0 0 auto;
+  border: 0;
+  object-fit: cover;
+  object-position: center center;
+  background: #e9dfce;
+}
+
+.global-page .global-location__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, .82fr);
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  padding-top: 7px;
+}
+
+.global-page .global-location__main {
+  min-width: 0;
+}
+
+.global-page .global-location__heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 74px;
+}
+
+.global-page .global-location__emblem {
+  display: block;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+  object-fit: contain;
+}
+
+.global-page .global-location__title-wrap {
+  min-width: 0;
+}
+
+.global-page .global-location__heading h2 {
+  margin: 0 0 4px;
+  color: var(--global-gold);
+  font-family: var(--serif, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(17px, 1.38vw, 22px);
+  font-weight: 500;
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+
+.global-page .global-location__heading span {
+  display: block;
+  color: #171512;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.global-page .global-location__main > p {
+  margin: 8px 0 0 4px;
+  color: #26221d;
+  font-size: clamp(12px, .91vw, 14px);
+  font-weight: 400;
+  line-height: 1.34;
+}
+
+.global-page .global-location__details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 9px;
+  min-width: 0;
+  margin: 7px 0 0;
+  padding: 0 0 0 12px;
+  list-style: none;
+  border-left: 1px solid rgba(169, 119, 44, .42);
+}
+
+.global-page .global-location__details li {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  min-width: 0;
+  color: #28231d;
+  font-size: clamp(10px, .76vw, 12px);
+  font-weight: 400;
+  line-height: 1.18;
+}
+
+.global-page .global-location__details li span,
+.global-page .global-location__details li a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.global-page .global-location__details li a {
+  color: inherit;
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+.global-page .global-location__details li a:hover {
+  color: var(--global-gold);
+  text-decoration: underline;
+}
+
+.global-page .global-location__details li a:focus-visible {
+  outline: 1px solid var(--global-gold);
+  outline-offset: 3px;
+}
+
+.global-page .global-detail-icon {
+  display: block;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  object-fit: contain;
+}
+
+/* OUR REACH: use the clean 2172x724 artwork with cover, never stretch it into a thin strip. */
+.global-page .global-reach {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 44%) minmax(0, 32%) minmax(0, 24%);
+  align-items: center;
+  width: 100%;
+  min-height: clamp(245px, 15vw, 290px);
+  overflow: hidden;
+  color: #f7f0e4;
+  background-color: #171613;
+  background-image: url('/assets/07-global-presence/background/global-reach-background.png');
+  background-position: left 44%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.global-page .global-reach__copy {
+  grid-column: 2;
+  min-width: 0;
+  padding: 20px 20px 20px 14px;
+}
+
+.global-page .global-reach__eyebrow {
+  color: #e4bd79;
+  font-size: 13px;
+  letter-spacing: .22em;
+}
+
+.global-page .global-reach__eyebrow::after {
+  width: clamp(85px, 10vw, 145px);
+  background: rgba(215, 173, 102, .75);
+}
+
+.global-page .global-reach__copy h2 {
+  margin: 10px 0 9px;
+  color: #d9ad63;
+  font-family: var(--serif, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(25px, 2.1vw, 35px);
+  font-weight: 500;
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+
+.global-page .global-reach__copy > p:last-child {
+  max-width: 475px;
+  margin: 0;
+  color: #f5eee2;
+  font-size: clamp(13px, .93vw, 15px);
+  font-weight: 400;
+  line-height: 1.34;
+}
+
+.global-page .global-reach__features {
+  grid-column: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 9px;
+  min-height: 174px;
+  margin: 0;
+  padding: 0 22px 0 25px;
+  list-style: none;
+  border-left: 1px solid rgba(215, 173, 102, .62);
+}
+
+.global-page .global-reach__features li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  color: #f7f0e4;
+  font-size: clamp(12px, .88vw, 14px);
+  font-weight: 400;
+  line-height: 1.18;
+}
+
+.global-page .global-reach__features img {
+  display: block;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  object-fit: contain;
+}
+
+@media (max-width: 1250px) {
+  .global-page .global-location {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .global-page .global-location__body {
+    grid-template-columns: minmax(0, 1fr) minmax(132px, .82fr);
+    gap: 8px;
+  }
+
+  .global-page .global-location__heading {
+    gap: 8px;
+  }
+
+  .global-page .global-location__emblem {
+    width: 60px;
+    height: 60px;
+    flex-basis: 60px;
+  }
+
+  .global-page .global-location__details {
+    padding-left: 8px;
+    gap: 8px;
+  }
+
+  .global-page .global-location__details li {
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  .global-page .global-detail-icon {
+    width: 18px;
+    height: 18px;
+    flex-basis: 18px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .global-page .global-hero {
+    grid-template-columns: minmax(0, 54%) minmax(0, 46%);
+    height: 340px;
+    background-position: center 48%;
+  }
+
+  .global-page .global-hero__copy {
+    padding-left: 34px;
+  }
+
+  .global-page .global-hero h1 {
+    font-size: clamp(39px, 4.5vw, 49px);
+  }
+
+  .global-page .global-hero__title-dark {
+    font-size: .82em;
+  }
+
+  .global-page .global-hero__side-note {
+    right: 18px;
+    width: 105px;
+  }
+
+  .global-page .global-hero__side-title {
+    font-size: 16px;
+  }
+
+  .global-page .global-hero__side-caption {
+    font-size: 11px;
+  }
+
+  .global-page .global-locations {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 20px;
+  }
+
+  .global-page .global-location:nth-child(3) {
+    grid-column: 1 / -1;
+    padding: 18px 0 0;
+    border-top: 1px solid rgba(169, 119, 44, .32);
+    border-left: 0;
+  }
+
+  .global-page .global-location:nth-child(3) .global-location__photo {
+    height: 210px;
+  }
+
+  .global-page .global-reach {
+    grid-template-columns: minmax(0, 38%) minmax(0, 37%) minmax(0, 25%);
+    min-height: 235px;
+    background-position: left 45%;
+  }
+
+  .global-page .global-reach__copy {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .global-page .global-reach__copy h2 {
+    font-size: 25px;
+  }
+
+  .global-page .global-reach__features {
+    padding-right: 10px;
+    padding-left: 14px;
+  }
+
+  .global-page .global-reach__features li {
+    gap: 7px;
+    font-size: 11px;
+  }
+
+  .global-page .global-reach__features img {
+    width: 33px;
+    height: 33px;
+    flex-basis: 33px;
+  }
+}
+
+@media (max-width: 680px) {
+  .global-page .global-hero {
+    display: block;
+    height: auto;
+    min-height: 0;
+    padding-bottom: 210px;
+    background-color: var(--global-ivory);
+    background-size: auto 210px;
+    background-position: center bottom;
+  }
+
+  .global-page .global-hero__copy {
+    width: 100%;
+    padding: 26px 20px 18px;
+    background: var(--global-ivory);
+  }
+
+  .global-page .global-hero__eyebrow {
+    font-size: 12px;
+  }
+
+  .global-page .global-hero h1 {
+    margin: 14px 0 9px;
+    font-size: clamp(36px, 9vw, 47px);
+  }
+
+  .global-page .global-hero__title-dark {
+    font-size: .8em;
+  }
+
+  .global-page .global-hero__description {
+    font-size: 15px;
+    line-height: 1.34;
+  }
+
+  .global-page .global-hero__side-note {
+    display: none;
+  }
+
+  .global-page .global-locations {
+    grid-template-columns: 1fr;
+    padding: 15px 20px 20px;
+    row-gap: 17px;
+  }
+
+  .global-page .global-location,
+  .global-page .global-location:first-child,
+  .global-page .global-location:last-child,
+  .global-page .global-location:nth-child(3) {
+    grid-column: auto;
+    padding: 0;
+    border-left: 0;
+  }
+
+  .global-page .global-location + .global-location {
+    padding-top: 17px;
+    border-top: 1px solid rgba(169, 119, 44, .32);
+  }
+
+  .global-page .global-location__photo,
+  .global-page .global-location:nth-child(3) .global-location__photo {
+    height: 190px;
+  }
+
+  .global-page .global-location__body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 11px;
+  }
+
+  .global-page .global-location__heading {
+    min-height: 66px;
+  }
+
+  .global-page .global-location__emblem {
+    width: 60px;
+    height: 60px;
+    flex-basis: 60px;
+  }
+
+  .global-page .global-location__heading h2 {
+    font-size: 20px;
+  }
+
+  .global-page .global-location__main > p {
+    margin-left: 0;
+    font-size: 14px;
+  }
+
+  .global-page .global-location__details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 2px;
+    padding: 12px 0 0;
+    border-top: 1px solid rgba(169, 119, 44, .42);
+    border-left: 0;
+  }
+
+  .global-page .global-location__details li {
+    font-size: 12px;
+    gap: 7px;
+  }
+
+  .global-page .global-detail-icon {
+    width: 20px;
+    height: 20px;
+    flex-basis: 20px;
+  }
+
+  .global-page .global-reach {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 500px;
+    padding-top: 165px;
+    background-position: 20% center;
+    background-size: auto 100%;
+  }
+
+  .global-page .global-reach__copy,
+  .global-page .global-reach__features {
+    position: relative;
+    z-index: 1;
+    grid-column: 1;
+  }
+
+  .global-page .global-reach__copy {
+    padding: 15px 20px 12px;
+  }
+
+  .global-page .global-reach__copy h2 {
+    font-size: 28px;
+  }
+
+  .global-page .global-reach__copy > p:last-child {
+    font-size: 14px;
+  }
+
+  .global-page .global-reach__features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    min-height: 0;
+    margin: 0 20px 18px;
+    padding: 12px 0 0;
+    border-top: 1px solid rgba(215, 173, 102, .5);
+    border-left: 0;
+  }
+
+  .global-page .global-reach__features li {
+    font-size: 12px;
+  }
+}

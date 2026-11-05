@@ -1,0 +1,771 @@
+.ruby-collection-page {
+  --rbc-ivory: #f7f2e8;
+  --rbc-paper: #fbf8f1;
+  --rbc-ink: #211b16;
+  --rbc-muted: #756b5e;
+  --rbc-gold: #b17a2a;
+  --rbc-gold-dark: #99641f;
+  --rbc-line: rgba(168, 119, 48, .34);
+  color: var(--rbc-ink);
+  background: var(--rbc-ivory);
+  font-family: 'Lora', Georgia, 'Times New Roman', serif;
+}
+.ruby-collection-page * { box-sizing: border-box; }
+
+/* Hero: use the supplied panoramic artwork at its natural colour, without tint overlays. */
+.rbc-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 228px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #1d1011;
+  color: #fff8ed;
+}
+.rbc-hero__image {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+.rbc-hero__content {
+  width: min(62%, 760px);
+  padding: 15px 0 20px clamp(28px, 4.5vw, 82px);
+}
+.rbc-breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 20px;
+  color: #f7eee2;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .015em;
+  line-height: 1.25;
+  text-transform: none;
+}
+.rbc-breadcrumbs a { color: inherit; text-decoration: none; transition: color .16s ease; }
+.rbc-breadcrumbs a:hover { color: #e4bd7b; }
+.rbc-breadcrumbs span:last-child { color: #c28c3f; }
+.rbc-hero h1 {
+  margin: 0 0 3px;
+  color: #fff8ed;
+  font-family: var(--heading, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(43px, 4.15vw, 59px);
+  font-weight: 500;
+  letter-spacing: -.035em;
+  line-height: .98;
+  text-transform: uppercase;
+}
+.rbc-hero__tagline {
+  margin: 7px 0 6px;
+  color: #fff7ed;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .18em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+.rbc-hero__tagline span { color: #c79244; padding: 0 5px; }
+.rbc-hero__description {
+  max-width: 545px;
+  margin: 0;
+  color: #fff7ed;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.38;
+}
+
+/* Catalogue layout and filter sidebar */
+.rbc-catalogue {
+  display: grid;
+  grid-template-columns: 273px minmax(0, 1fr);
+  column-gap: 20px;
+  padding: 16px clamp(28px, 3.35vw, 60px) 18px;
+  background: var(--rbc-ivory);
+}
+.rbc-catalogue--wide { grid-template-columns: minmax(0, 1fr); }
+.rbc-sidebar {
+  min-width: 0;
+  padding-right: 25px;
+  border-right: 1px solid var(--rbc-line);
+}
+.rbc-sidebar--collapsed { padding-right: 0; border-right: 0; }
+.rbc-sidebar__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 9px;
+  margin: 0 0 12px;
+  border-bottom: 1px solid var(--rbc-line);
+}
+.rbc-sidebar__heading h2 {
+  margin: 0;
+  color: #2a241e;
+  font-family: var(--heading, 'Cormorant Garamond', Georgia, serif);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .17em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.rbc-sidebar__heading button {
+  padding: 3px 0 3px 8px;
+  border: 0;
+  background: transparent;
+  color: var(--rbc-gold-dark);
+  font-family: 'Lora', Georgia, serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+.rbc-filters { display: grid; gap: 0; }
+.rbc-filter-group {
+  padding: 0 0 11px;
+  margin: 0 0 11px;
+  border-bottom: 1px solid rgba(168,119,48,.2);
+}
+.rbc-filter-group--type { display: grid; gap: 8px; }
+.rbc-filter-group--type label,
+.rbc-filter-group__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  color: #31291f;
+  font-family: 'Lora', Georgia, serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: .015em;
+  line-height: 1.25;
+  text-align: left;
+  text-transform: none;
+}
+.rbc-filter-group__toggle {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.rbc-filter-group__toggle b {
+  color: #302820;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+}
+.rbc-filter-group select {
+  width: 100%;
+  height: 37px;
+  padding: 0 10px;
+  border: 1px solid var(--rbc-line);
+  border-radius: 0;
+  background: var(--rbc-paper);
+  color: var(--rbc-ink);
+  font: 400 14px 'Lora', Georgia, serif;
+}
+.rbc-filter-group__content { display: grid; gap: 3px; padding-top: 7px; }
+.rbc-check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 21px;
+  color: #4b4136;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+.rbc-check-row input {
+  width: 14px;
+  height: 14px;
+  margin: 0 2px 0 0;
+  accent-color: var(--rbc-gold);
+  flex: 0 0 auto;
+}
+.rbc-check-row span { flex: 1; }
+.rbc-check-row small { color: #8a7b68; font-size: 10.5px; }
+.rbc-range-row { display: flex; align-items: center; gap: 8px; }
+.rbc-range-row input {
+  width: 0;
+  min-width: 0;
+  flex: 1;
+  height: 36px;
+  padding: 0 9px;
+  border: 1px solid var(--rbc-line);
+  border-radius: 0;
+  background: var(--rbc-paper);
+  color: var(--rbc-ink);
+  font: 400 13px 'Lora', Georgia, serif;
+}
+.rbc-price-note { margin: 0; color: var(--rbc-muted); font-size: 11.5px; line-height: 1.45; }
+.rbc-apply-button,
+.rbc-clear-button {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid var(--rbc-gold);
+  border-radius: 0;
+  font: 500 11px 'Lora', Georgia, serif;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.rbc-apply-button { margin-top: 1px; background: #ad782c; color: #fff9ef; }
+.rbc-apply-button:hover { background: #97641f; }
+.rbc-clear-button { margin-top: 7px; background: transparent; color: #5a4b39; }
+.rbc-clear-button:hover { background: rgba(177,122,42,.08); }
+
+/* Results toolbar */
+.rbc-results { min-width: 0; }
+.rbc-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 28px;
+  margin: 0 0 12px;
+}
+.rbc-toolbar > strong {
+  color: #2b251e;
+  font-family: var(--heading, 'Cormorant Garamond', Georgia, serif);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .025em;
+  text-transform: uppercase;
+}
+.rbc-toolbar__controls { display: flex; align-items: center; gap: 16px; }
+.rbc-sort-control {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #3e352b;
+  font-size: 11px;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.rbc-toolbar__controls select {
+  min-width: 150px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--rbc-line);
+  border-radius: 0;
+  background: rgba(255,255,255,.14);
+  color: var(--rbc-ink);
+  font: 400 12px 'Lora', Georgia, serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.rbc-view-toggle { display: flex; align-items: center; gap: 7px; }
+.rbc-view-toggle button {
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 31px;
+  padding: 0;
+  border: 1px solid var(--rbc-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--rbc-gold-dark);
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.rbc-view-toggle button:hover { background: rgba(177,122,42,.1); }
+.rbc-view-toggle button.is-active { background: #b17a2a; color: #fff8ed; border-color: #b17a2a; }
+.rbc-view-toggle svg { display: block; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; stroke-linejoin: miter; }
+.rbc-live-message { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+
+/* Product cards: image-first, clean thin borders, consistent card heights. */
+.rbc-stone-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px 17px; }
+.rbc-stone-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border: 1px solid rgba(168,119,48,.29);
+  background: rgba(255,255,255,.32);
+}
+.rbc-stone-card__visual { position: relative; overflow: hidden; background: #211817; }
+.rbc-stone-card__image-link { display: block; width: 100%; aspect-ratio: 2.28 / 1; overflow: hidden; }
+.rbc-stone-card__image { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform .2s ease; }
+.rbc-stone-card__image-link:hover .rbc-stone-card__image { transform: scale(1.025); }
+.rbc-heart {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #fffaf2;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.75));
+  transition: color .15s ease, transform .15s ease;
+}
+.rbc-heart:hover { transform: scale(1.1); }
+.rbc-heart svg { display: block; width: 23px; height: 23px; }
+.rbc-heart.is-saved { color: #e4ae50; filter: drop-shadow(0 1px 2px rgba(0,0,0,.7)); }
+.rbc-stone-card__body { display: flex; flex: 1; flex-direction: column; padding: 7px 10px 8px; }
+.rbc-stone-card__title { display: flex; align-items: baseline; justify-content: space-between; gap: 7px; color: #241e18; font-size: 12.5px; line-height: 1.2; }
+.rbc-stone-card__title strong { white-space: nowrap; font-size: 11.5px; font-weight: 500; }
+.rbc-stone-card dl { display: grid; gap: 2px; margin: 7px 0 8px; }
+.rbc-stone-card dl div { display: grid; grid-template-columns: 50px minmax(0, 1fr); gap: 5px; color: #6b5e4e; font-size: 10.5px; line-height: 1.22; }
+.rbc-stone-card dt { color: #867664; }
+.rbc-stone-card dd { min-width: 0; margin: 0; color: #3f362d; overflow-wrap: anywhere; }
+.rbc-detail-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 30px;
+  margin-top: auto;
+  padding: 0 7px;
+  border: 1px solid var(--rbc-gold);
+  color: #30271e;
+  font-family: var(--heading, 'Cormorant Garamond', Georgia, serif);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background .15s ease, color .15s ease;
+}
+.rbc-detail-button:hover { background: var(--rbc-gold); color: #fffaf1; }
+.rbc-detail-button span { color: var(--rbc-gold-dark); font-family: Arial, sans-serif; font-size: 16px; }
+.rbc-detail-button:hover span { color: inherit; }
+.rbc-stone-grid--list { grid-template-columns: 1fr; }
+.rbc-stone-grid--list .rbc-stone-card { display: grid; grid-template-columns: minmax(190px, 29%) minmax(0, 1fr); }
+.rbc-stone-grid--list .rbc-stone-card__image-link { aspect-ratio: auto; height: 100%; min-height: 150px; }
+.rbc-stone-grid--list .rbc-stone-card__body { padding: 12px 15px; }
+.rbc-stone-grid--list .rbc-stone-card dl { margin: 10px 0; }
+.rbc-stone-grid--list .rbc-stone-card dl div { grid-template-columns: 65px minmax(0,1fr); }
+.rbc-image-fallback { display: grid; place-items: center; min-height: 100px; background: #281817; color: #d7b477; font-size: 12px; text-align: center; }
+.rbc-empty-state { padding: 38px 18px; border: 1px dashed var(--rbc-line); color: var(--rbc-muted); text-align: center; }
+.rbc-empty-state button { border: 0; background: none; color: var(--rbc-gold-dark); text-decoration: underline; cursor: pointer; }
+.rbc-pagination { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 16px; color: var(--rbc-muted); font-size: 12px; }
+.rbc-pagination button { display: grid; place-items: center; min-width: 29px; height: 29px; padding: 0 6px; border: 1px solid transparent; background: transparent; color: #392f24; font: 500 14px var(--heading, 'Cormorant Garamond', Georgia, serif); cursor: pointer; }
+.rbc-pagination button.is-current { border-color: #ad782c; background: #ad782c; color: #fff8ee; }
+.rbc-pagination button:disabled { opacity: .4; cursor: default; }
+
+/* Bottom assurances strip */
+.rbc-assurances {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  align-items: center;
+  gap: 13px;
+  padding: 14px clamp(24px, 3.2vw, 58px);
+  border-top: 1px solid rgba(168,119,48,.22);
+  background: var(--rbc-paper);
+}
+.rbc-assurances article { display: flex; min-width: 0; align-items: center; gap: 9px; padding-right: 11px; border-right: 1px solid var(--rbc-line); }
+.rbc-assurance__icon,
+.rbc-assurance-fallback { display: grid; place-items: center; width: 47px; height: 47px; flex: 0 0 47px; object-fit: contain; }
+.rbc-assurance-fallback { color: var(--rbc-gold-dark); font-size: 35px; }
+.rbc-assurances h2 { margin: 0 0 3px; color: #2a241d; font-family: var(--heading, 'Cormorant Garamond', Georgia, serif); font-size: 11.5px; font-weight: 600; line-height: 1.15; text-transform: uppercase; }
+.rbc-assurances p { margin: 0; color: #62584c; font-size: 10.5px; line-height: 1.28; }
+.rbc-enquire-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 14px;
+  background: #ae782b;
+  color: #fff8ee;
+  font-family: var(--heading, 'Cormorant Garamond', Georgia, serif);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background .15s ease;
+}
+.rbc-enquire-button:hover { background: #96621e; }
+.rbc-enquire-button span { font-family: Arial, sans-serif; font-size: 16px; }
+
+@media (max-width: 1350px) {
+  .rbc-catalogue { grid-template-columns: 235px minmax(0,1fr); column-gap: 18px; padding-left: 28px; padding-right: 28px; }
+  .rbc-sidebar { padding-right: 18px; }
+  .rbc-stone-grid { gap: 12px; }
+  .rbc-stone-card__body { padding: 7px 8px; }
+  .rbc-stone-card dl div { grid-template-columns: 45px minmax(0,1fr); font-size: 10px; }
+  .rbc-assurances { grid-template-columns: repeat(4,minmax(0,1fr)); }
+  .rbc-enquire-button { grid-column: 1 / -1; justify-self: end; min-width: 220px; }
+}
+@media (max-width: 980px) {
+  .rbc-hero { min-height: 220px; }
+  .rbc-hero__content { width: 72%; }
+  .rbc-catalogue { grid-template-columns: 190px minmax(0,1fr); gap: 15px; padding: 16px 20px; }
+  .rbc-stone-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .rbc-stone-card__image-link { aspect-ratio: 2.05 / 1; }
+  .rbc-toolbar { align-items: flex-start; flex-wrap: wrap; }
+  .rbc-toolbar__controls { gap: 10px; }
+  .rbc-assurances { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 15px 12px; }
+  .rbc-assurances article:nth-child(2) { border-right: 0; }
+  .rbc-assurances article:nth-child(4) { border-right: 0; }
+  .rbc-enquire-button { grid-column: 1 / -1; justify-self: stretch; }
+}
+@media (max-width: 680px) {
+  .rbc-hero { min-height: 260px; align-items: flex-end; }
+  .rbc-hero__image { object-position: 64% center; }
+  .rbc-hero__content { width: 100%; padding: 16px 19px 22px; background: rgba(24, 12, 12, .42); }
+  .rbc-breadcrumbs { margin-bottom: 13px; gap: 8px; font-size: 10px; }
+  .rbc-hero h1 { font-size: clamp(37px, 10vw, 48px); }
+  .rbc-hero__tagline { font-size: 10.5px; letter-spacing: .12em; }
+  .rbc-hero__description { max-width: 470px; font-size: 13px; line-height: 1.4; }
+  .rbc-catalogue, .rbc-catalogue--wide { display: block; padding: 13px 15px 17px; }
+  .rbc-sidebar { padding: 0; margin: 0 0 14px; border: 1px solid var(--rbc-line); }
+  .rbc-sidebar__heading { padding: 10px 12px; margin: 0; border: 0; }
+  .rbc-sidebar__heading h2 { font-size: 12px; }
+  .rbc-filters { padding: 11px 12px; border-top: 1px solid var(--rbc-line); }
+  .rbc-toolbar { display: grid; grid-template-columns: 1fr; gap: 9px; margin-bottom: 11px; }
+  .rbc-toolbar > strong { font-size: 14px; }
+  .rbc-toolbar__controls { justify-content: space-between; flex-wrap: wrap; gap: 9px; }
+  .rbc-sort-control { flex: 1; justify-content: space-between; }
+  .rbc-toolbar__controls select { min-width: 0; width: min(61%, 185px); }
+  .rbc-view-toggle button { width: 31px; height: 31px; }
+  .rbc-stone-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .rbc-stone-card__image-link { aspect-ratio: 1.45 / 1; }
+  .rbc-stone-card__body { padding: 7px; }
+  .rbc-stone-card__title { font-size: 11.5px; }
+  .rbc-stone-card__title strong { font-size: 10.5px; }
+  .rbc-stone-card dl { margin: 6px 0 8px; }
+  .rbc-stone-card dl div { grid-template-columns: 39px minmax(0,1fr); gap: 3px; font-size: 9px; }
+  .rbc-detail-button { min-height: 30px; gap: 5px; padding: 0 2px; font-size: 9px; letter-spacing: .035em; }
+  .rbc-stone-grid--list .rbc-stone-card { grid-template-columns: 36% minmax(0,1fr); }
+  .rbc-stone-grid--list .rbc-stone-card__image-link { min-height: 130px; }
+  .rbc-stone-grid--list .rbc-stone-card__body { padding: 8px; }
+  .rbc-stone-grid--list .rbc-stone-card dl div { grid-template-columns: 48px minmax(0,1fr); }
+  .rbc-assurances { grid-template-columns: 1fr 1fr; padding: 13px 15px; gap: 12px 9px; }
+  .rbc-assurances article { align-items: flex-start; gap: 7px; padding-right: 7px; }
+  .rbc-assurances article:nth-child(odd) { border-right: 1px solid var(--rbc-line); }
+  .rbc-assurances article:nth-child(even) { border-right: 0; }
+  .rbc-assurance__icon, .rbc-assurance-fallback { width: 35px; height: 35px; flex-basis: 35px; }
+  .rbc-assurances h2 { font-size: 9.5px; }
+  .rbc-assurances p { font-size: 9.5px; }
+  .rbc-enquire-button { width: 100%; min-width: 0; grid-column: 1 / -1; }
+}
+@media (max-width: 430px) {
+  .rbc-stone-grid { grid-template-columns: 1fr; }
+  .rbc-stone-card__image-link { aspect-ratio: 2.15 / 1; }
+  .rbc-stone-card__body { padding: 9px 10px; }
+  .rbc-stone-card dl div { grid-template-columns: 55px minmax(0,1fr); font-size: 10.5px; }
+  .rbc-detail-button { font-size: 10px; }
+  .rbc-stone-grid--list .rbc-stone-card { grid-template-columns: 1fr; }
+  .rbc-stone-grid--list .rbc-stone-card__image-link { min-height: 165px; }
+  .rbc-assurances { grid-template-columns: 1fr; }
+  .rbc-assurances article, .rbc-assurances article:nth-child(odd), .rbc-assurances article:nth-child(even) { border-right: 0; border-bottom: 1px solid var(--rbc-line); padding: 0 0 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rbc-hero *, .rbc-stone-card *, .rbc-view-toggle button, .rbc-enquire-button { transition: none !important; }
+}
+
+
+/* --------------------------------------------------------------------------
+   Approved Ruby Collection reference refinements (November 2026)
+   These rules are page-scoped; shared header and the other website pages remain untouched.
+   -------------------------------------------------------------------------- */
+.ruby-collection-page {
+  --rbc-ivory: #f6f1e7;
+  --rbc-paper: #fbf8f1;
+  --rbc-gold: #b17a2a;
+  --rbc-gold-dark: #98651f;
+  background: var(--rbc-ivory);
+}
+
+/* The delivered panorama is already composed for a wide banner: never tint or filter it. */
+.rbc-hero {
+  min-height: 228px;
+  height: clamp(208px, 14.85vw, 236px);
+  background: #1a0d0e;
+}
+.rbc-hero__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  filter: none !important;
+  opacity: 1;
+}
+.rbc-hero__content {
+  width: min(54%, 720px);
+  max-width: 720px;
+  padding-top: 14px;
+  padding-bottom: 18px;
+}
+.rbc-hero h1 {
+  font-size: clamp(45px, 3.8vw, 58px);
+  letter-spacing: -.025em;
+}
+.rbc-hero__description {
+  max-width: 530px;
+  line-height: 1.38;
+}
+
+/* Keep collection cards on the warm, clean ivory surface of the reference. */
+.rbc-catalogue {
+  background: var(--rbc-ivory);
+  padding-top: 15px;
+  padding-bottom: 17px;
+}
+.rbc-stone-grid {
+  gap: 14px 17px;
+}
+.rbc-stone-card {
+  min-height: 244px;
+  background: rgba(255, 255, 255, .26);
+  border-color: rgba(168, 119, 48, .30);
+}
+.rbc-stone-card__visual {
+  background: #1a1514;
+}
+.rbc-stone-card__image-link {
+  aspect-ratio: 2.28 / 1;
+  background: #1a1514;
+}
+.rbc-stone-card__image {
+  object-fit: cover;
+  object-position: center 48%;
+  filter: none !important;
+  opacity: 1;
+}
+.rbc-stone-card__image-link:hover .rbc-stone-card__image {
+  transform: scale(1.015);
+}
+.rbc-stone-card__body {
+  padding: 7px 10px 8px;
+}
+.rbc-stone-card__title {
+  font-size: 12.5px;
+}
+.rbc-stone-card dl div {
+  line-height: 1.2;
+}
+
+/* Selected wishlist state is ruby red, not amber/yellow. */
+.rbc-heart.is-saved {
+  color: #d5243f;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .72));
+}
+.rbc-heart.is-saved svg path {
+  fill: currentColor;
+}
+
+/* Compact horizontal list rows: image at left, details aligned to the right. */
+.rbc-stone-grid--list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.rbc-stone-grid--list .rbc-stone-card {
+  display: grid;
+  grid-template-columns: 176px minmax(0, 1fr);
+  min-height: 132px;
+  height: 132px;
+}
+.rbc-stone-grid--list .rbc-stone-card__visual {
+  height: 130px;
+  min-height: 0;
+}
+.rbc-stone-grid--list .rbc-stone-card__image-link {
+  width: 100%;
+  height: 130px;
+  min-height: 0;
+  aspect-ratio: auto;
+}
+.rbc-stone-grid--list .rbc-stone-card__image {
+  object-fit: cover;
+  object-position: center 48%;
+}
+.rbc-stone-grid--list .rbc-stone-card__body {
+  display: grid;
+  grid-template-columns: minmax(135px, .85fr) minmax(220px, 1.5fr) minmax(145px, .75fr);
+  grid-template-rows: 1fr;
+  align-items: center;
+  column-gap: 18px;
+  min-width: 0;
+  padding: 12px 15px;
+}
+.rbc-stone-grid--list .rbc-stone-card__title {
+  align-self: start;
+  padding-top: 2px;
+  font-size: 13px;
+}
+.rbc-stone-grid--list .rbc-stone-card dl {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 16px;
+  margin: 0;
+}
+.rbc-stone-grid--list .rbc-stone-card dl div {
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 5px;
+  font-size: 10.5px;
+}
+.rbc-stone-grid--list .rbc-detail-button {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: center;
+  min-height: 34px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Footer icons share a common optical box; enlarge the medal artwork slightly to compensate
+   for its built-in transparent padding, without changing its layout footprint. */
+.rbc-assurances {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  align-items: center;
+  gap: 12px;
+  background: #fbf8f1;
+}
+.rbc-assurances article {
+  min-height: 52px;
+}
+.rbc-assurance__icon,
+.rbc-assurance-fallback {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  object-fit: contain;
+}
+.rbc-assurances article:nth-child(2) .rbc-assurance__icon {
+  transform: scale(1.17);
+  transform-origin: center;
+}
+.rbc-assurances h2 {
+  font-size: 11.5px;
+  letter-spacing: .015em;
+}
+.rbc-assurances p {
+  font-size: 10.5px;
+  line-height: 1.28;
+}
+
+@media (max-width: 1350px) {
+  .rbc-assurances {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .rbc-enquire-button {
+    grid-column: 1 / -1;
+  }
+  .rbc-stone-grid--list .rbc-stone-card {
+    grid-template-columns: 156px minmax(0, 1fr);
+  }
+  .rbc-stone-grid--list .rbc-stone-card__body {
+    grid-template-columns: minmax(115px, .75fr) minmax(180px, 1.35fr) minmax(125px, .7fr);
+    column-gap: 12px;
+  }
+}
+
+@media (max-width: 980px) {
+  .rbc-hero {
+    height: auto;
+    min-height: 220px;
+  }
+  .rbc-assurances {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .rbc-enquire-button {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+  }
+  .rbc-hero__content {
+    width: 72%;
+  }
+  .rbc-stone-grid--list .rbc-stone-card {
+    grid-template-columns: 145px minmax(0, 1fr);
+    height: 128px;
+  }
+  .rbc-stone-grid--list .rbc-stone-card__visual,
+  .rbc-stone-grid--list .rbc-stone-card__image-link {
+    height: 126px;
+  }
+  .rbc-stone-grid--list .rbc-stone-card__body {
+    grid-template-columns: minmax(0, 1fr) minmax(120px, .8fr);
+    grid-template-rows: auto 1fr;
+    gap: 7px 12px;
+    padding: 9px 11px;
+  }
+  .rbc-stone-grid--list .rbc-stone-card__title {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .rbc-stone-grid--list .rbc-stone-card dl {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3px 10px;
+  }
+  .rbc-stone-grid--list .rbc-detail-button {
+    grid-column: 2;
+    grid-row: 1;
+    min-height: 29px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 680px) {
+  .rbc-hero {
+    height: auto;
+    min-height: 255px;
+  }
+  .rbc-hero__content {
+    width: 100%;
+  }
+  .rbc-stone-grid--list .rbc-stone-card {
+    grid-template-columns: 34% minmax(0, 1fr);
+    height: 128px;
+    min-height: 128px;
+  }
+  .rbc-stone-grid--list .rbc-stone-card__visual,
+  .rbc-stone-grid--list .rbc-stone-card__image-link {
+    height: 126px;
+  }
+  .rbc-stone-grid--list .rbc-stone-card__body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+    min-width: 0;
+    padding: 7px 8px;
+  }
+  .rbc-stone-grid--list .rbc-stone-card__title {
+    padding: 0;
+    font-size: 10.5px;
+  }
+  .rbc-stone-grid--list .rbc-stone-card dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px 6px;
+    margin: 0;
+  }
+  .rbc-stone-grid--list .rbc-stone-card dl div {
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 2px;
+    font-size: 8px;
+  }
+  .rbc-stone-grid--list .rbc-detail-button {
+    align-self: stretch;
+    min-height: 24px;
+    margin-top: auto;
+    font-size: 8px;
+  }
+  .rbc-assurances article:nth-child(2) .rbc-assurance__icon {
+    transform: scale(1.1);
+  }
+}

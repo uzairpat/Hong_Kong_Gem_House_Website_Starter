@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+  <title>AIGS — typographic nameplate placeholder</title>
+  <desc>Custom typographic placeholder, not an official logo.</desc>
+  <g text-anchor="middle">
+    <text x="600" y="225" fill="#191713" font-family="Georgia, 'Times New Roman', serif" font-size="150" font-weight="bold" letter-spacing="1">AIGS</text>
+    <path d="M250 275 H950" stroke="#B48235" stroke-width="3"/>
+    <text x="600" y="335" fill="#554938" font-family="Georgia, 'Times New Roman', serif" font-size="34" letter-spacing="2">ASIAN INSTITUTE OF GEMOLOGICAL SCIENCES</text>
+  </g>
+</svg>
