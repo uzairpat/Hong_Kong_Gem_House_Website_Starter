@@ -4,6 +4,11 @@ import helmet from "helmet";
 import { env } from "./config/env.js";
 import { pool } from "./db/pool.js";
 
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import { csrfSync } from "csrf-sync";
+import authRouter from "./routes/auth.js";
+
 export const app = express();
 
 const allowedOrigins = env.CORS_ORIGIN
@@ -25,6 +30,49 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json({ limit: "1mb" }));
+
+const PgSessionStore = connectPgSimple(session);
+const isProduction = env.NODE_ENV === "production";
+
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
+
+app.use(session({
+  name: "hkg.sid",
+  store: new PgSessionStore({
+    pool,
+    tableName: "user_sessions",
+    schemaName: "public",
+    createTableIfMissing: false,
+    pruneSessionInterval: 900,
+  }),
+  secret: env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+  cookie: {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: "/",
+  },
+}));
+
+const {
+  csrfSynchronisedProtection,
+  generateToken,
+  invalidCsrfTokenError,
+} = csrfSync();
+
+app.get("/api/auth/csrf", (request, response) => {
+  response.json({ csrfToken: generateToken(request) });
+});
+
+app.use(csrfSynchronisedProtection);
+
+
 
 app.get("/api/health", async (_request, response) => {
   try {
@@ -142,13 +190,30 @@ app.get("/api/gemstones/:referenceCode", async (request, response, next) => {
   }
 });
 
+app.use("/api/auth", authRouter);
+
 app.use((_request, response) => {
   response.status(404).json({ error: "API endpoint not found." });
 });
 
+
 const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => {
+  // Handle CSRF validation errors
+  if (
+    error === invalidCsrfTokenError ||
+    (error instanceof Error && error.message.toLowerCase().includes("csrf"))
+  ) {
+    response.status(403).json({
+      error: "Invalid or missing security token. Please refresh and try again.",
+    });
+    return;
+  }
+
   console.error("Unhandled API error:", error);
-  response.status(500).json({ error: "Internal server error." });
+
+  response.status(500).json({
+    error: "Internal server error.",
+  });
 };
 
 app.use(errorHandler);
