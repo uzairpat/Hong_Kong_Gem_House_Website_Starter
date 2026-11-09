@@ -125,7 +125,8 @@ function SocialMark({ kind }: { kind: 'linkedin' | 'instagram' | 'youtube' }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="3"/><path d="m10 9 5 3-5 3Z" fill="currentColor" stroke="none" /></svg>;
 }
 
-export default function ContactPage() {
+export default function ContactPage({ embedded = false }: { embedded?: boolean }) {
+  const PageRoot = embedded ? 'div' : 'main';
   const [params] = useSearchParams();
   const enquiryRef = params.get('enquiry') || '';
   const [sent, setSent] = useState(false);
@@ -148,7 +149,7 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="contact-page">
+    <PageRoot className="contact-page">
       <section className="contact-hero" aria-label="Contact Hong Kong Gem House">
         <div className="contact-hero__intro">
           <p className="eyebrow eyebrow--line">Contact &amp; Enquiries</p>
@@ -303,20 +304,39 @@ export default function ContactPage() {
 
       <footer className="contact-footer">
         <div className="contact-footer__brand">
-          <Link to="/" className="contact-footer__brandline" aria-label="Hong Kong Gem House home">
-            <img src="/assets/01-homepage/hkg-logo-emblem.png" alt="Hong Kong Gem House emblem" />
-            <span>
-              <strong>Hong Kong Gem House Limited</strong>
-              <small>Est. 1959</small>
-            </span>
-          </Link>
+          {embedded ? (
+            <a href="#home" className="contact-footer__brandline" aria-label="Hong Kong Gem House home">
+              <img src="/assets/01-homepage/hkg-logo-emblem.png" alt="Hong Kong Gem House emblem" />
+              <span>
+                <strong>Hong Kong Gem House Limited</strong>
+                <small>Est. 1959</small>
+              </span>
+            </a>
+          ) : (
+            <Link to="/" className="contact-footer__brandline" aria-label="Hong Kong Gem House home">
+              <img src="/assets/01-homepage/hkg-logo-emblem.png" alt="Hong Kong Gem House emblem" />
+              <span>
+                <strong>Hong Kong Gem House Limited</strong>
+                <small>Est. 1959</small>
+              </span>
+            </Link>
+          )}
           <p>Carrying the Wavoo &amp; Vilak legacy of gemstone excellence from source to city.</p>
           <span className="contact-footer__accent" aria-hidden="true" />
         </div>
 
         <nav className="contact-footer__links" aria-label="Footer quick links">
           <h2>Quick Links</h2>
-          {quickLinks.map(([label, to]) => <Link key={to} to={to}>{label}</Link>)}
+          {quickLinks.map(([label, to]) => embedded
+            ? <a key={to} href={({
+                "/": "#home",
+                "/our-heritage": "#our-heritage",
+                "/our-gemstones": "#our-gemstones",
+                "/quality-trust": "#quality-trust",
+                "/global-presence": "#global-presence",
+                "/contact": "#contact",
+              } as Record<string, string>)[to]}>{label}</a>
+            : <Link key={to} to={to}>{label}</Link>)}
         </nav>
 
         <div className="contact-footer__specialization">
@@ -349,6 +369,6 @@ export default function ContactPage() {
           © 2026 Hong Kong Gem House Limited. All rights reserved.
         </div>
       </footer>
-    </main>
+    </PageRoot>
   );
 }
