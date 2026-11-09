@@ -128,7 +128,8 @@ const features = [
   },
 ];
 
-export default function GemstonesPage() {
+export default function GemstonesPage({ embedded = false }: { embedded?: boolean }) {
+  const PageRoot = embedded ? 'div' : 'main';
   const heroCandidates = [
     `${ASSET_ROOT}/a_wide_high_resolution_horizontal_luxury_backgro.png`,
     `${ASSET_ROOT}/a_wide_high_resolution_horizontal_luxury_background.png`,
@@ -149,7 +150,7 @@ export default function GemstonesPage() {
   ];
 
   return (
-    <main className="gemstones-page">
+    <PageRoot className="gemstones-page">
       <section className="gemstones-hero" aria-labelledby="gemstones-title">
         <AssetImage
           candidates={heroCandidates}
@@ -233,6 +234,6 @@ export default function GemstonesPage() {
           <span aria-hidden="true" />
         </blockquote>
       </section>
-    </main>
+    </PageRoot>
   );
 }
