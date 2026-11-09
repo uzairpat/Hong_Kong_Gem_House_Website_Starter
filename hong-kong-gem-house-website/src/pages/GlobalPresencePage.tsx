@@ -133,9 +133,10 @@ function DetailIcon({ name }: { name: DetailIconName }) {
   );
 }
 
-export default function GlobalPresencePage() {
+export default function GlobalPresencePage({ embedded = false }: { embedded?: boolean }) {
+  const PageRoot = embedded ? 'div' : 'main';
   return (
-    <main className="global-page">
+    <PageRoot className="global-page">
       <section
         className="global-hero"
         aria-label="Global presence connecting Hong Kong, Bangkok and Sri Lanka"
@@ -227,6 +228,6 @@ export default function GlobalPresencePage() {
           ))}
         </ul>
       </section>
-    </main>
+    </PageRoot>
   );
 }
