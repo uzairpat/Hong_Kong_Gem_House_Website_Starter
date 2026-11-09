@@ -1,27 +1,61 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import SiteHeader from './components/SiteHeader';
-import HomePage from './pages/HomePage';
-import HeritagePage from './pages/HeritagePage';
-import GemstonesPage from './pages/GemstonesPage';
+import SinglePageHomePage from './pages/SinglePageHomePage';
 import RubyCollectionPage from './pages/RubyCollectionPage';
 import StoneDetailPage from './pages/StoneDetailPage';
-import QualityTrustPage from './pages/QualityTrustPage';
-import GlobalPresencePage from './pages/GlobalPresencePage';
-import ContactPage from './pages/ContactPage';
+
+function HashScrollManager() {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (pathname !== '/' || !hash) return;
+
+    const sectionId = decodeURIComponent(hash.slice(1));
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(sectionId)?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname, hash]);
+
+  return null;
+}
+
+function ContactSectionRedirect() {
+  const location = useLocation();
+
+  return (
+    <Navigate
+      to={{ pathname: '/', search: location.search, hash: '#contact' }}
+      replace
+    />
+  );
+}
 
 export default function App() {
-  return <div className="site-shell">
-    <SiteHeader />
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/our-heritage" element={<HeritagePage />} />
-      <Route path="/our-gemstones" element={<GemstonesPage />} />
-      <Route path="/collections/:category" element={<RubyCollectionPage />} />
-      <Route path="/stones/:stoneId" element={<StoneDetailPage />} />
-      <Route path="/quality-trust" element={<QualityTrustPage />} />
-      <Route path="/global-presence" element={<GlobalPresencePage />} />
-      <Route path="/contact" element={<ContactPage />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  </div>;
+  return (
+    <div className="site-shell">
+      <SiteHeader />
+      <HashScrollManager />
+      <Routes>
+        <Route path="/" element={<SinglePageHomePage />} />
+
+        {/* Old section URLs now lead to their matching position on the home page. */}
+        <Route path="/our-heritage" element={<Navigate to="/#our-heritage" replace />} />
+        <Route path="/our-gemstones" element={<Navigate to="/#our-gemstones" replace />} />
+        <Route path="/quality-trust" element={<Navigate to="/#quality-trust" replace />} />
+        <Route path="/global-presence" element={<Navigate to="/#global-presence" replace />} />
+        <Route path="/contact" element={<ContactSectionRedirect />} />
+
+        {/* Collection and individual gemstone pages remain separate destinations. */}
+        <Route path="/collections/:category" element={<RubyCollectionPage />} />
+        <Route path="/stones/:stoneId" element={<StoneDetailPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
+  );
 }
