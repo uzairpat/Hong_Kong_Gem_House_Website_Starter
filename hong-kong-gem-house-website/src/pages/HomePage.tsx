@@ -36,9 +36,10 @@ const pillars = [
   },
 ];
 
-export default function HomePage() {
+export default function HomePage({ embedded = false }: { embedded?: boolean }) {
+  const PageRoot = embedded ? 'div' : 'main';
   return (
-    <main className="home-page">
+    <PageRoot className="home-page">
       <section className="home-hero home-hero--composite" aria-labelledby="home-title">
         <div className="home-hero__content">
           <p className="eyebrow eyebrow--line">Hong Kong Gem House Limited</p>
@@ -53,8 +54,16 @@ export default function HomePage() {
           </div>
           <p className="home-hero__specialty">Specializing in: Ruby, Blue Sapphire, Emerald &amp; Rare Gems</p>
           <div className="hero-actions">
-            <Link className="button button--gold" to="/contact">Enquire About Gemstones <span aria-hidden="true">→</span></Link>
-            <Link className="button button--outline" to="/our-heritage">Our Heritage <span aria-hidden="true">→</span></Link>
+            {embedded ? (
+              <a className="button button--gold" href="#contact">Enquire About Gemstones <span aria-hidden="true">→</span></a>
+            ) : (
+              <Link className="button button--gold" to="/contact">Enquire About Gemstones <span aria-hidden="true">→</span></Link>
+            )}
+            {embedded ? (
+              <a className="button button--outline" href="#our-heritage">Our Heritage <span aria-hidden="true">→</span></a>
+            ) : (
+              <Link className="button button--outline" to="/our-heritage">Our Heritage <span aria-hidden="true">→</span></Link>
+            )}
           </div>
         </div>
       </section>
@@ -70,6 +79,6 @@ export default function HomePage() {
           </article>
         ))}
       </section>
-    </main>
+    </PageRoot>
   );
 }
