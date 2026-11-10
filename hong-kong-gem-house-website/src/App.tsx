@@ -3,7 +3,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import SiteHeader from './components/SiteHeader';
 import WhatsAppButton from './components/WhatsAppButton';
 import SinglePageHomePage from './pages/SinglePageHomePage';
-import RubyCollectionPage from './pages/RubyCollectionPage';
+import GemstoneCollectionRoute from './pages/GemstoneCollectionRoute';
 import StoneDetailPage from './pages/StoneDetailPage';
 import {
   ForgotPasswordPage,
@@ -73,7 +73,7 @@ export default function App() {
         <Route path="/contact" element={<ContactSectionRedirect />} />
 
         {/* Gemstone collections and individual stone details remain separate pages. */}
-        <Route path="/collections/:category" element={<RubyCollectionPage />} />
+        <Route path="/collections/:category" element={<GemstoneCollectionRoute />} />
         <Route path="/stones/:stoneId" element={<StoneDetailPage />} />
 
         {/* Customer authentication. */}
