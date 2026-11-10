@@ -1835,3 +1835,22 @@ img { display: block; max-width: 100%; }
     margin-left: 0;
   }
 }
+
+
+/* Make the four home-page gemstone icons clear, keyboard-accessible collection links. */
+.home-hero__gem-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform .18s ease, filter .18s ease;
+}
+.home-hero__gem-link:hover {
+  transform: translateY(-3px) scale(1.06);
+  filter: drop-shadow(0 4px 5px rgba(87,60,25,.2));
+}
+.home-hero__gem-link:focus-visible {
+  outline: 2px solid var(--gold-dark);
+  outline-offset: 4px;
+}
