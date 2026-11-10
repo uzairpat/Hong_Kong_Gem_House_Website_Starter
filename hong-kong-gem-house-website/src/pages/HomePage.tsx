@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 const assetRoot = '/assets/homepage-elements';
 
 const specialtyGems = [
-  { name: 'Ruby', src: `${assetRoot}/gemstones/ruby-transparent.png` },
-  { name: 'Blue sapphire', src: `${assetRoot}/gemstones/blue-sapphire-transparent.png` },
-  { name: 'Emerald', src: `${assetRoot}/gemstones/emerald-transparent.png` },
-  { name: 'Rare gemstone', src: `${assetRoot}/gemstones/rare-star-gem-transparent.png` },
+  { name: 'Ruby', slug: 'ruby', src: `${assetRoot}/gemstones/ruby-transparent.png` },
+  { name: 'Blue sapphire', slug: 'blue-sapphire', src: `${assetRoot}/gemstones/blue-sapphire-transparent.png` },
+  { name: 'Emerald', slug: 'emerald', src: `${assetRoot}/gemstones/emerald-transparent.png` },
+  { name: 'Rare gemstone', slug: 'rare-gemstones', src: `${assetRoot}/gemstones/rare-star-gem-transparent.png` },
 ];
 
 const pillars = [
@@ -49,7 +49,15 @@ export default function HomePage({ embedded = false }: { embedded?: boolean }) {
           </p>
           <div className="home-hero__gem-row" aria-label="Our gemstone specialities">
             {specialtyGems.map((gem) => (
-              <img key={gem.name} src={gem.src} alt={gem.name} title={gem.name} />
+              <Link
+                key={gem.name}
+                className="home-hero__gem-link"
+                to={`/collections/${gem.slug}`}
+                aria-label={`Explore the ${gem.name} collection`}
+                title={`Explore ${gem.name}`}
+              >
+                <img src={gem.src} alt={gem.name} />
+              </Link>
             ))}
           </div>
           <p className="home-hero__specialty">Specializing in: Ruby, Blue Sapphire, Emerald &amp; Rare Gems</p>
