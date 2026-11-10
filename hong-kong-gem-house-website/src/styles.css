@@ -1565,51 +1565,6 @@ img { display: block; max-width: 100%; }
 
 
 
-/* Keep the full desktop header balanced when account links are present. */
-@media (min-width: 1501px) and (max-width: 1800px) {
-  .site-header__inner {
-    gap: clamp(10px, 1.1vw, 18px);
-  }
-  .brand__mark {
-    width: 66px;
-    height: 74px;
-  }
-  .brand__name {
-    font-size: clamp(15px, 1.06vw, 18px);
-  }
-  .brand__est {
-    font-size: 12px;
-  }
-  .header-divider {
-    height: 44px;
-    margin-left: 0;
-  }
-  .main-nav {
-    gap: clamp(9px, .95vw, 17px);
-  }
-  .main-nav__link {
-    font-size: clamp(13px, .9vw, 15px);
-  }
-  .header-auth-actions {
-    gap: 8px;
-  }
-  .header-auth-actions__login {
-    font-size: 13px;
-  }
-  .header-auth-actions__register {
-    min-height: 37px;
-    padding: 0 9px;
-    font-size: 11px;
-  }
-  .header-enquire {
-    min-width: 155px;
-    min-height: 45px;
-    margin-left: 0;
-    padding: 0 13px;
-    font-size: 13px;
-  }
-}
-
 /* Customer authentication actions in the shared header */
 .header-auth-actions {
   display: flex;
@@ -1823,4 +1778,31 @@ img { display: block; max-width: 100%; }
 @media (max-width: 640px) {
   .account-profile { grid-template-columns: minmax(0,1fr); }
   .account-page__tabs a { flex: 1 1 auto; justify-content: center; padding: 0 8px; font-size: 12px; }
+}
+
+
+/* Keep the full desktop header balanced when account links are present. */
+@media (min-width: 1501px) and (max-width: 1800px) {
+  .site-header__inner { gap: clamp(10px, 1.1vw, 18px); }
+  .brand__mark { width: 66px; height: 74px; }
+  .brand__name { font-size: clamp(15px, 1.06vw, 18px); }
+  .brand__est { font-size: 12px; }
+  .header-divider { height: 44px; margin-left: 0; }
+  .main-nav { gap: clamp(9px, .95vw, 17px); }
+  .main-nav__link { font-size: clamp(13px, .9vw, 15px); }
+  .header-auth-actions { gap: 8px; }
+  .header-auth-actions__login { font-size: 13px; }
+  .header-auth-actions__register {
+    min-height: 37px;
+    padding: 0 9px;
+    font-size: 11px;
+  }
+  .header-account__trigger { padding: 0 8px; font-size: 13px; }
+  .header-enquire {
+    min-width: 155px;
+    min-height: 45px;
+    margin-left: 0;
+    padding: 0 13px;
+    font-size: 13px;
+  }
 }
