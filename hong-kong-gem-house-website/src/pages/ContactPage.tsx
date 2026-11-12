@@ -5,6 +5,7 @@ import './ContactPage.css';
 type ContactField = 'name' | 'company' | 'email' | 'phone' | 'type' | 'message';
 
 const asset = '/assets/08-contact';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000').replace(/\/$/, '');
 
 const enquiryCategories = [
   {
@@ -130,6 +131,9 @@ export default function ContactPage({ embedded = false }: { embedded?: boolean }
   const [params] = useSearchParams();
   const enquiryRef = params.get('enquiry') || '';
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [enquiryNumber, setEnquiryNumber] = useState('');
   const [form, setForm] = useState({
     name: '',
     company: '',
@@ -143,9 +147,52 @@ export default function ContactPage({ embedded = false }: { embedded?: boolean }
     setForm((current) => ({ ...current, [field]: value }));
   };
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSent(true);
+    setSubmitError('');
+    setSubmitting(true);
+    try {
+      const csrfResponse = await fetch(`${API_BASE_URL}/api/auth/csrf`, {
+        credentials: 'include',
+        headers: { Accept: 'application/json' },
+      });
+      const csrfResult = await csrfResponse.json().catch(() => ({})) as { csrfToken?: string };
+      if (!csrfResponse.ok || !csrfResult.csrfToken) {
+        throw new Error('We could not securely submit your enquiry. Please refresh and try again.');
+      }
+
+      const reference = /^[A-Za-z0-9-]{3,32}$/.test(enquiryRef) ? enquiryRef : '';
+      const response = await fetch(`${API_BASE_URL}/api/enquiries`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfResult.csrfToken,
+        },
+        body: JSON.stringify({
+          name: form.name,
+          company: form.company,
+          email: form.email,
+          phone: form.phone,
+          type: form.type,
+          message: form.message,
+          gemstoneReference: reference,
+          sourcePath: window.location.pathname + window.location.search,
+        }),
+      });
+      const result = await response.json().catch(() => ({})) as {
+        error?: string;
+        enquiry?: { enquiry_number?: string };
+      };
+      if (!response.ok) throw new Error(result.error || 'We could not submit your enquiry. Please try again.');
+      setEnquiryNumber(result.enquiry?.enquiry_number || '');
+      setSent(true);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'We could not submit your enquiry. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -178,7 +225,8 @@ export default function ContactPage({ embedded = false }: { embedded?: boolean }
             <div className="contact-form-success" role="status" aria-live="polite">
               <span className="contact-form-success__check" aria-hidden="true">✓</span>
               <h3>Thank you for your enquiry.</h3>
-              <p>Your details have been validated. The form still needs to be connected to the company email or CRM to deliver enquiries.</p>
+              <p>Your message has been safely recorded in our enquiry system. Our team will review it and follow up with you.</p>
+              {enquiryNumber && <p className="contact-form-success__reference">Enquiry reference: <strong>{enquiryNumber}</strong></p>}
               <button type="button" className="contact-form-card__reset" onClick={() => setSent(false)}>
                 Send another message
               </button>
@@ -260,8 +308,9 @@ export default function ContactPage({ embedded = false }: { embedded?: boolean }
                 placeholder="Your Message *"
               />
 
-              <button type="submit" className="contact-form-card__submit">
-                Send Enquiry <span aria-hidden="true">→</span>
+              {submitError && <p className="contact-form-error" role="alert">{submitError}</p>}
+              <button type="submit" className="contact-form-card__submit" disabled={submitting}>
+                {submitting ? 'Submitting…' : 'Send Enquiry'} <span aria-hidden="true">→</span>
               </button>
             </>
           )}

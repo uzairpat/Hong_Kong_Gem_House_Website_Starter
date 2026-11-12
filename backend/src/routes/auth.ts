@@ -138,6 +138,19 @@ router.post("/register", authLimiter, async (req, res) => {
       [userId, tokenHash]
     );
 
+    await client.query(
+      `INSERT INTO customer_profiles
+        (user_id, full_name, company_name, email, phone, customer_status, source)
+       VALUES ($1, $2, $3, $4, $5, 'active', 'website')
+       ON CONFLICT (LOWER(email)) DO UPDATE
+       SET user_id = EXCLUDED.user_id,
+           full_name = EXCLUDED.full_name,
+           company_name = EXCLUDED.company_name,
+           phone = EXCLUDED.phone,
+           updated_at = NOW()`,
+      [userId, input.fullName, input.companyName || null, input.email, input.phone || null]
+    );
+
     await client.query("COMMIT");
   } catch (error) {
     await client.query("ROLLBACK");

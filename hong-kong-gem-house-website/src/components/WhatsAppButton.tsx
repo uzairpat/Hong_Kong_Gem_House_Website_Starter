@@ -47,6 +47,19 @@ export default function WhatsAppButton() {
       rel="noopener noreferrer"
       aria-label="Chat with Hong Kong Gem House on WhatsApp"
       title="Chat with us on WhatsApp"
+      onClick={() => {
+        void fetch((import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000').replace(/\/$/, '') + '/api/events', {
+          method: 'POST',
+          keepalive: true,
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            eventName: 'whatsapp_clicked',
+            pagePath: location.pathname + location.hash,
+            source: 'floating_button',
+            consentState: 'unknown',
+          }),
+        }).catch(() => undefined);
+      }}
     >
       <svg viewBox="0 0 32 32" width="27" height="27" fill="currentColor" aria-hidden="true">
         <path d="M16 2.7A13.2 13.2 0 0 0 4.7 22.8l-1.8 6.5 6.7-1.8A13.3 13.3 0 1 0 16 2.7Zm0 24.1c-2.1 0-4.1-.6-5.9-1.7l-.4-.2-4 .9 1.1-3.9-.3-.4A10.8 10.8 0 1 1 16 26.8Z" />

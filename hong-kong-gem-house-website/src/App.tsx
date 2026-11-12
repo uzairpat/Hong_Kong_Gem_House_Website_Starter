@@ -13,6 +13,7 @@ import {
   VerifyEmailPage,
 } from './pages/AuthPages';
 import CustomerAccountPage from './pages/CustomerAccountPage';
+import { AdminLoginPage, AdminPortal } from './admin/AdminPortal';
 
 const authPaths = [
   '/login',
@@ -55,11 +56,12 @@ function ContactSectionRedirect() {
 
 export default function App() {
   const location = useLocation();
-  const isAuthPage = authPaths.includes(location.pathname);
+  const isAdminPage = location.pathname.startsWith('/admin');
+  const isAuthPage = authPaths.includes(location.pathname) || isAdminPage;
 
   return (
     <div className="site-shell">
-      {!isAuthPage && <SiteHeader />}
+      {!isAdminPage && !isAuthPage && <SiteHeader />}
       <HashScrollManager />
 
       <Routes>
@@ -76,6 +78,12 @@ export default function App() {
         <Route path="/collections/:category" element={<GemstoneCollectionRoute />} />
         <Route path="/stones/:stoneId" element={<StoneDetailPage />} />
 
+        {/* Owner administration is a separate protected workspace. */}
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+        <Route path="/admin/forgot-password" element={<AdminLoginPage />} />
+        <Route path="/admin/reset-password" element={<AdminLoginPage />} />
+        <Route path="/admin/*" element={<AdminPortal />} />
+
         {/* Customer authentication. */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -90,7 +98,7 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      {!isAuthPage && <WhatsAppButton />}
+      {!isAuthPage && !isAdminPage && <WhatsAppButton />}
     </div>
   );
 }

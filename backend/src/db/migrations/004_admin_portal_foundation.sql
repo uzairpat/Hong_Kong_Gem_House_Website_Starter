@@ -153,6 +153,18 @@ CREATE TABLE IF NOT EXISTS customer_profiles (
 CREATE UNIQUE INDEX IF NOT EXISTS idx_customer_profiles_email_lower
   ON customer_profiles (LOWER(email));
 
+-- Existing verified customer accounts are represented in the CRM directory.
+INSERT INTO customer_profiles (user_id, full_name, company_name, email, phone, customer_status, source)
+SELECT id, full_name, company_name, email, phone, 'active', 'website'
+FROM users
+WHERE account_type = 'customer' AND status = 'active'
+ON CONFLICT (LOWER(email)) DO UPDATE
+SET user_id = EXCLUDED.user_id,
+    full_name = EXCLUDED.full_name,
+    company_name = EXCLUDED.company_name,
+    phone = EXCLUDED.phone,
+    updated_at = NOW();
+
 CREATE TABLE IF NOT EXISTS enquiry_number_counter (
   id SMALLINT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
   last_number BIGINT NOT NULL DEFAULT 0

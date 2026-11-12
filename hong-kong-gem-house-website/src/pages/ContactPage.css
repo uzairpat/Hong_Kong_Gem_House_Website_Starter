@@ -586,3 +586,20 @@
   .contact-office__photo { height: 144px; }
   .contact-office__details p { font-size: 10px; }
 }
+
+
+/* Enquiry form backend submission states */
+.contact-form-card__submit:disabled { opacity: .65; cursor: wait; }
+.contact-form-error {
+  margin: 0;
+  padding: 9px 11px;
+  border: 1px solid rgba(154, 71, 57, .35);
+  color: #913f34;
+  background: rgba(255, 245, 241, .94);
+  font: 12px/1.5 Arial, sans-serif;
+}
+.contact-form-success__reference {
+  margin-top: 12px !important;
+  color: #715126 !important;
+  font-weight: 600 !important;
+}

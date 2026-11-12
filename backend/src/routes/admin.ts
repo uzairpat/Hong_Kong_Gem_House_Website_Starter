@@ -1,7 +1,7 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import { rateLimit } from "express-rate-limit";
 import argon2 from "argon2";
-import { createCipheriv, createDecipheriv, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 import { pool } from "../db/pool.js";
 import { env } from "../config/env.js";
@@ -82,7 +82,7 @@ function createToken(): string {
   return randomBytes(32).toString("base64url");
 }
 function hashToken(token: string): string {
-  return createHmac("sha256", "hkg-password-reset-v1").update(token).digest("hex");
+  return createHash("sha256").update(token).digest("hex");
 }
 function saveSession(request: Request): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -522,7 +522,7 @@ router.post("/gemstones", async (request, response) => {
   const input = parsed.data;
   try {
     const result = await pool.query(
-      "INSERT INTO gemstones (reference_code, name, category, weight_carat, shape, origin, colour, clarity, treatment, certification_lab, certification_number, description, status, availability_status, acquisition_cost, selling_price, currency_code, public_price_mode, public_visibility, is_sample, created_by, updated_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'draft',$13,$14,$15,$16,$17,$18,$19,FALSE,$20,$20) RETURNING *",
+      "INSERT INTO gemstones (reference_code, name, category, weight_carat, shape, origin, colour, clarity, treatment, certification_lab, certification_number, description, status, availability_status, acquisition_cost, selling_price, currency_code, public_price_mode, public_visibility, is_sample, created_by, updated_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'draft',$13,$14,$15,$16,$17,$18,FALSE,$19,$19) RETURNING *",
       [
         input.referenceCode, input.name, input.category, input.weightCarat ?? null,
         input.shape || null, input.origin || null, input.colour || null, input.clarity || null,
