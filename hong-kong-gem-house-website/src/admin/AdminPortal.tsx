@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import "./AdminPortal.css";
+import BrandMark from "../components/BrandMark";
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:4000").replace(/\/$/, "");
 
@@ -237,7 +238,7 @@ export function AdminLoginPage() {
   return (
     <main className="admin-auth">
       <div className="admin-auth__brand">
-        <span className="admin-brand-mark" aria-hidden="true">HKG</span>
+        <BrandMark className="admin-auth__brand-mark" width={52} height={58} />
         <span>
           <strong>Hong Kong Gem House</strong>
           <small>OWNER ADMINISTRATION</small>
@@ -723,7 +724,7 @@ export function AdminPortal() {
   return (
     <div className="admin-app">
       <aside className="admin-sidebar">
-        <div className="admin-sidebar__brand"><span className="admin-brand-mark">HKG</span><span><strong>HONG KONG<br />GEM HOUSE</strong><small>ADMIN PORTAL</small></span></div>
+        <div className="admin-sidebar__brand"><BrandMark className="admin-sidebar__logo" width={48} height={53} /><span><strong>HONG KONG<br />GEM HOUSE</strong><small>ADMIN PORTAL</small></span></div>
         <div className="admin-sidebar__rule" />
         <nav aria-label="Administration navigation">
           {navigation.map((group) => <div className="admin-nav-group" key={group.group}><p>{group.group}</p>{group.items.map((item) => <button key={item.key} className={section === item.key ? "is-active" : ""} onClick={() => openSection(item.key)}><span aria-hidden="true">{item.icon}</span>{item.label}</button>)}</div>)}
