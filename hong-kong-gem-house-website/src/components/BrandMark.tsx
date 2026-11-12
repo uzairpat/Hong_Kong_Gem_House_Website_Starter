@@ -1,22 +1,27 @@
-
 interface BrandMarkProps {
   className?: string;
+  width?: number;
+  height?: number;
 }
 
-export default function BrandMark({ className }: BrandMarkProps) {
+export default function BrandMark({
+  className,
+  width = 80,
+  height = 88,
+}: BrandMarkProps) {
   return (
     <img
       src="/assets/01-homepage/hkg-logo-emblem.png"
       alt="Hong Kong Gem House emblem"
       className={className}
-      width={80}
-      height={88}
+      width={width}
+      height={height}
       style={{
         display: "block",
-        width: "80px",
-        height: "88px",
-        minWidth: "80px",
-        maxWidth: "80px",
+        width: `${width}px`,
+        height: `${height}px`,
+        minWidth: `${width}px`,
+        maxWidth: `${width}px`,
         objectFit: "contain",
         objectPosition: "center",
         flexShrink: 0,
