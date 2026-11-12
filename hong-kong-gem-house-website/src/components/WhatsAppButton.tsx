@@ -4,6 +4,37 @@ import './WhatsAppButton.css';
 const rawNumber = import.meta.env.VITE_WHATSAPP_NUMBER ?? '';
 const whatsappNumber = rawNumber.replace(/\D/g, '');
 
+async function recordWhatsAppClick(pagePath: string): Promise<void> {
+  const apiBase = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000').replace(/\\/$/, '');
+  try {
+    const csrfResponse = await fetch(apiBase + '/api/auth/csrf', {
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
+    });
+    const csrfResult = await csrfResponse.json().catch(() => ({})) as { csrfToken?: string };
+    if (!csrfResponse.ok || !csrfResult.csrfToken) return;
+
+    await fetch(apiBase + '/api/events', {
+      method: 'POST',
+      credentials: 'include',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-CSRF-Token': csrfResult.csrfToken,
+      },
+      body: JSON.stringify({
+        eventName: 'whatsapp_clicked',
+        pagePath,
+        source: 'floating_button',
+        consentState: 'unknown',
+      }),
+    });
+  } catch {
+    // Analytics must never block the WhatsApp handoff.
+  }
+}
+
 function getEnquiryMessage(pathname: string, search: string, hash: string): string {
   const query = new URLSearchParams(search);
   const enquiryReference = query.get('enquiry');
@@ -48,17 +79,7 @@ export default function WhatsAppButton() {
       aria-label="Chat with Hong Kong Gem House on WhatsApp"
       title="Chat with us on WhatsApp"
       onClick={() => {
-        void fetch((import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000').replace(/\/$/, '') + '/api/events', {
-          method: 'POST',
-          keepalive: true,
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({
-            eventName: 'whatsapp_clicked',
-            pagePath: location.pathname + location.hash,
-            source: 'floating_button',
-            consentState: 'unknown',
-          }),
-        }).catch(() => undefined);
+        void recordWhatsAppClick(location.pathname + location.hash);
       }}
     >
       <svg viewBox="0 0 32 32" width="27" height="27" fill="currentColor" aria-hidden="true">
