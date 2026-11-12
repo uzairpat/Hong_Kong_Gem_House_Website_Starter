@@ -5,7 +5,7 @@ const rawNumber = import.meta.env.VITE_WHATSAPP_NUMBER ?? '';
 const whatsappNumber = rawNumber.replace(/\D/g, '');
 
 async function recordWhatsAppClick(pagePath: string): Promise<void> {
-  const apiBase = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000').replace(/\\/$/, '');
+  const apiBase = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000').replace(/\/$/, '');
   try {
     const csrfResponse = await fetch(apiBase + '/api/auth/csrf', {
       credentials: 'include',
