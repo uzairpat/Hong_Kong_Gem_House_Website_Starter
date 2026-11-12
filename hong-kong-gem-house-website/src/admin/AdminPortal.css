@@ -247,3 +247,6 @@
   .admin-gemstone-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .admin-gemstone-steps button { font-size:9px; }
 }
+
+.admin-enquiry-inventory-link { display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:0 0 17px;padding:12px;border:1px solid #e5d9c5;background:#faf6ee;color:#796a52;font:10px/1.4 Arial,sans-serif; }
+.admin-enquiry-inventory-link strong { color:#493a25; }
