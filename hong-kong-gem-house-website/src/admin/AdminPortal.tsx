@@ -47,6 +47,20 @@ type Gemstone = {
   public_visibility: boolean;
   updated_at: string;
   image_path: string | null;
+  cut?: string | null;
+  dimensions_mm?: string | null;
+  origin_region?: string | null;
+  sourcing_method?: string | null;
+  supplier_name?: string | null;
+  supplier_reference?: string | null;
+  ownership_type?: string;
+  stock_location?: string | null;
+  acquisition_date?: string | null;
+  internal_notes?: string | null;
+  public_title?: string | null;
+  public_description?: string | null;
+  seo_title?: string | null;
+  seo_description?: string | null;
 };
 type Enquiry = {
   id: string;
@@ -347,6 +361,8 @@ export function AdminPortal() {
   const [search, setSearch] = useState("");
   const [enquirySearch, setEnquirySearch] = useState("");
   const [showGemstoneForm, setShowGemstoneForm] = useState(false);
+  const [gemstoneStep, setGemstoneStep] = useState(1);
+  const [gemstoneOptions, setGemstoneOptions] = useState<Record<string, Array<{ id: string; value: string }>>>({});
   const [editingGemstoneId, setEditingGemstoneId] = useState<string | null>(null);
   const [showStaffForm, setShowStaffForm] = useState(false);
   const [editingStaffId, setEditingStaffId] = useState<string | null>(null);
@@ -360,6 +376,9 @@ export function AdminPortal() {
     origin: "", colour: "", clarity: "", treatment: "", certificationLab: "",
     certificationNumber: "", description: "", availabilityStatus: "available",
     acquisitionCost: "", sellingPrice: "", currencyCode: "", publicPriceMode: "hidden",
+    cut: "", dimensionsMm: "", originRegion: "", sourcingMethod: "", supplierName: "",
+    supplierReference: "", ownershipType: "owned", stockLocation: "", acquisitionDate: "",
+    internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "",
   });
   const [staffForm, setStaffForm] = useState({ fullName: "", email: "", phone: "", department: "", jobTitle: "", employmentStatus: "active" });
 
@@ -378,8 +397,12 @@ export function AdminPortal() {
     setDashboard(result);
   };
   const loadGemstones = async () => {
-    const result = await apiRequest<{ data: Gemstone[] }>("/api/admin/gemstones?search=" + encodeURIComponent(search));
+    const [result, options] = await Promise.all([
+      apiRequest<{ data: Gemstone[] }>("/api/admin/gemstones?search=" + encodeURIComponent(search)),
+      apiRequest<{ data: Record<string, Array<{ id: string; value: string }>> }>("/api/admin/gemstone-options"),
+    ]);
     setGemstones(result.data);
+    setGemstoneOptions(options.data || {});
   };
   const loadEnquiries = async () => {
     const [result, staffResult] = await Promise.all([
@@ -448,7 +471,16 @@ export function AdminPortal() {
       sellingPrice: gemstone.selling_price || "",
       currencyCode: gemstone.currency_code || "",
       publicPriceMode: gemstone.public_price_mode,
+      cut: gemstone.cut || "", dimensionsMm: gemstone.dimensions_mm || "",
+      originRegion: gemstone.origin_region || "", sourcingMethod: gemstone.sourcing_method || "",
+      supplierName: gemstone.supplier_name || "", supplierReference: gemstone.supplier_reference || "",
+      ownershipType: gemstone.ownership_type || "owned", stockLocation: gemstone.stock_location || "",
+      acquisitionDate: gemstone.acquisition_date ? String(gemstone.acquisition_date).slice(0, 10) : "",
+      internalNotes: gemstone.internal_notes || "", publicTitle: gemstone.public_title || "",
+      publicDescription: gemstone.public_description || "", seoTitle: gemstone.seo_title || "",
+      seoDescription: gemstone.seo_description || "",
     });
+    setGemstoneStep(1);
     setFormMessage("");
     setShowGemstoneForm(true);
   };
@@ -463,6 +495,7 @@ export function AdminPortal() {
       acquisitionCost: gemstoneForm.acquisitionCost ? Number(gemstoneForm.acquisitionCost) : null,
       sellingPrice: gemstoneForm.sellingPrice ? Number(gemstoneForm.sellingPrice) : null,
       currencyCode: gemstoneForm.currencyCode || null,
+      acquisitionDate: gemstoneForm.acquisitionDate || null,
     };
     try {
       if (editingGemstoneId) {
@@ -484,6 +517,9 @@ export function AdminPortal() {
         origin: "", colour: "", clarity: "", treatment: "", certificationLab: "",
         certificationNumber: "", description: "", availabilityStatus: "available",
         acquisitionCost: "", sellingPrice: "", currencyCode: "", publicPriceMode: "hidden",
+        cut: "", dimensionsMm: "", originRegion: "", sourcingMethod: "", supplierName: "",
+        supplierReference: "", ownershipType: "owned", stockLocation: "", acquisitionDate: "",
+        internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "",
       });
       await loadGemstones();
       setFormMessage(editingGemstoneId ? "Gemstone details updated." : "Gemstone draft created.");
@@ -633,35 +669,69 @@ export function AdminPortal() {
     if (section === "gemstones") {
       return (
         <>
-          <div className="admin-page-heading"><div><p className="admin-eyebrow">CATALOGUE CONTROL</p><h1>Gemstone Inventory</h1><p>Maintain one accurate record for each physical gemstone.</p></div><button className="admin-button admin-button--primary" onClick={() => { setEditingGemstoneId(null); setGemstoneForm({ referenceCode: "", name: "", category: "ruby", weightCarat: "", shape: "", origin: "", colour: "", clarity: "", treatment: "", certificationLab: "", certificationNumber: "", description: "", availabilityStatus: "available", acquisitionCost: "", sellingPrice: "", currencyCode: "", publicPriceMode: "hidden" }); setShowGemstoneForm(true); }}>＋ Add gemstone</button></div>
+          <div className="admin-page-heading"><div><p className="admin-eyebrow">CATALOGUE CONTROL</p><h1>Gemstone Inventory</h1><p>Maintain one accurate record for each physical gemstone.</p></div><button className="admin-button admin-button--primary" onClick={() => { setEditingGemstoneId(null); setGemstoneForm({ referenceCode: "", name: "", category: "ruby", weightCarat: "", shape: "", origin: "", colour: "", clarity: "", treatment: "", certificationLab: "", certificationNumber: "", description: "", availabilityStatus: "available", acquisitionCost: "", sellingPrice: "", currencyCode: "", publicPriceMode: "hidden", cut: "", dimensionsMm: "", originRegion: "", sourcingMethod: "", supplierName: "", supplierReference: "", ownershipType: "owned", stockLocation: "", acquisitionDate: "", internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "", publicVisibility: true }); setGemstoneStep(1); setShowGemstoneForm(true); }}>＋ Add gemstone</button></div>
           <div className="admin-toolbar"><input aria-label="Search gemstone inventory" placeholder="Search reference, name or origin…" value={search} onChange={(event) => setSearch(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") void loadGemstones(); }} /><button className="admin-button admin-button--secondary" onClick={() => void loadGemstones()}>Search</button></div>
           {formMessage && <p className="admin-inline-message">{formMessage}</p>}
           <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Reference / Gemstone</th><th>Category</th><th>Carat</th><th>Availability</th><th>Publication</th><th>Price display</th><th>Updated</th><th>Actions</th></tr></thead><tbody>
             {gemstones.map((gemstone) => <tr key={gemstone.id}><td><strong>{gemstone.reference_code}</strong><small>{gemstone.name}</small></td><td>{labelFor(gemstone.category)}</td><td>{gemstone.weight_carat ?? "—"}</td><td><span className={"admin-pill admin-pill--" + gemstone.availability_status}>{labelFor(gemstone.availability_status)}</span></td><td><span className={"admin-pill admin-pill--" + gemstone.status}>{labelFor(gemstone.status)}</span></td><td>{labelFor(gemstone.public_price_mode)}</td><td>{formatDate(gemstone.updated_at)}</td><td><div className="admin-row-actions"><button onClick={() => beginEditGemstone(gemstone)}>Edit</button>{gemstone.status === "archived" ? <button onClick={() => void updateGemstoneStatus(gemstone, "restore")}>Restore</button> : gemstone.status === "published" ? <button onClick={() => void updateGemstoneStatus(gemstone, "unpublish")}>Unpublish</button> : <button onClick={() => void updateGemstoneStatus(gemstone, "publish")}>Publish</button>}<button onClick={() => void updateGemstoneStatus(gemstone, "archive")} disabled={gemstone.status === "archived"}>Archive</button></div></td></tr>)}
             {!gemstones.length && <tr><td colSpan={8}><EmptyState title="No inventory records found" text="Add the first verified gemstone record, or adjust your search." /></td></tr>}
           </tbody></table></div>
-          {showGemstoneForm && <div className="admin-modal-backdrop" role="presentation"><section className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="gemstone-form-title"><div className="admin-panel__heading"><div><p className="admin-eyebrow">NEW INVENTORY RECORD</p><h2 id="gemstone-form-title">{editingGemstoneId ? "Edit gemstone" : "Add gemstone"}</h2></div><button className="admin-icon-button" onClick={() => setShowGemstoneForm(false)} aria-label="Close">×</button></div>
+          {showGemstoneForm && <div className="admin-modal-backdrop" role="presentation"><section className="admin-modal admin-gemstone-wizard" role="dialog" aria-modal="true" aria-labelledby="gemstone-form-title">
+            <div className="admin-panel__heading"><div><p className="admin-eyebrow">INVENTORY WORKFLOW · STEP {gemstoneStep} OF 4</p><h2 id="gemstone-form-title">{editingGemstoneId ? "Edit gemstone" : "Add gemstone"}</h2></div><button className="admin-icon-button" onClick={() => setShowGemstoneForm(false)} aria-label="Close">×</button></div>
+            <div className="admin-gemstone-steps" aria-label="Gemstone entry steps">{["Identity","Specifications","Ownership & pricing","Website listing"].map((label,index)=><button type="button" key={label} className={gemstoneStep===index+1?"is-current":gemstoneStep>index+1?"is-complete":""} onClick={()=>setGemstoneStep(index+1)}><span>{index+1}</span>{label}</button>)}</div>
             <form className="admin-form admin-form--grid" onSubmit={saveGemstone}>
-              <label>Reference code *<input required disabled={Boolean(editingGemstoneId)} value={gemstoneForm.referenceCode} onChange={(event) => setGemstoneForm({ ...gemstoneForm, referenceCode: event.target.value.toUpperCase() })} placeholder="RBY-009" /></label>
-              <label>Gemstone name *<input required value={gemstoneForm.name} onChange={(event) => setGemstoneForm({ ...gemstoneForm, name: event.target.value })} /></label>
-              <label>Category *<select value={gemstoneForm.category} onChange={(event) => setGemstoneForm({ ...gemstoneForm, category: event.target.value })}><option value="ruby">Ruby</option><option value="sapphire">Blue Sapphire</option><option value="emerald">Emerald</option><option value="rare">Rare Gemstone</option></select></label>
-              <label>Carat weight<input type="number" min="0.01" step="0.01" value={gemstoneForm.weightCarat} onChange={(event) => setGemstoneForm({ ...gemstoneForm, weightCarat: event.target.value })} /></label>
-              <label>Shape<input value={gemstoneForm.shape} onChange={(event) => setGemstoneForm({ ...gemstoneForm, shape: event.target.value })} /></label>
-              <label>Origin<input value={gemstoneForm.origin} onChange={(event) => setGemstoneForm({ ...gemstoneForm, origin: event.target.value })} /></label>
-              <label>Colour<input value={gemstoneForm.colour} onChange={(event) => setGemstoneForm({ ...gemstoneForm, colour: event.target.value })} /></label>
-              <label>Clarity<input value={gemstoneForm.clarity} onChange={(event) => setGemstoneForm({ ...gemstoneForm, clarity: event.target.value })} /></label>
-              <label>Treatment<input value={gemstoneForm.treatment} onChange={(event) => setGemstoneForm({ ...gemstoneForm, treatment: event.target.value })} /></label>
-              <label>Certification lab<input value={gemstoneForm.certificationLab} onChange={(event) => setGemstoneForm({ ...gemstoneForm, certificationLab: event.target.value })} /></label>
-              <label>Certificate number<input value={gemstoneForm.certificationNumber} onChange={(event) => setGemstoneForm({ ...gemstoneForm, certificationNumber: event.target.value })} /></label>
-              <label>Availability<select value={gemstoneForm.availabilityStatus} onChange={(event) => setGemstoneForm({ ...gemstoneForm, availabilityStatus: event.target.value })}><option value="available">Available</option><option value="reserved">Reserved</option><option value="sold">Sold</option><option value="unavailable">Unavailable</option></select></label>
-              <div className="admin-form__section-title">Internal commercial details</div>
-              <label>Acquisition cost<input type="number" min="0" step="0.01" value={gemstoneForm.acquisitionCost} onChange={(event) => setGemstoneForm({ ...gemstoneForm, acquisitionCost: event.target.value })} /></label>
-              <label>Selling price<input type="number" min="0" step="0.01" value={gemstoneForm.sellingPrice} onChange={(event) => setGemstoneForm({ ...gemstoneForm, sellingPrice: event.target.value })} /></label>
-              <label>Currency code<input maxLength={3} placeholder="Confirm currency" value={gemstoneForm.currencyCode} onChange={(event) => setGemstoneForm({ ...gemstoneForm, currencyCode: event.target.value.toUpperCase() })} /></label>
-              <label>Public price mode<select value={gemstoneForm.publicPriceMode} onChange={(event) => setGemstoneForm({ ...gemstoneForm, publicPriceMode: event.target.value })}><option value="hidden">Hide price</option><option value="enquiry">Enquire for price</option><option value="fixed">Show fixed price</option></select></label>
-              <label className="admin-form__full">Description<textarea rows={4} value={gemstoneForm.description} onChange={(event) => setGemstoneForm({ ...gemstoneForm, description: event.target.value })} /></label>
-              <p className="admin-form__helper admin-form__full">This saves a draft. Images and private certificates will be connected after the storage provider is approved. Internal cost is never returned by the public catalogue API.</p>
-              <div className="admin-form__actions admin-form__full"><button type="button" className="admin-button admin-button--secondary" onClick={() => setShowGemstoneForm(false)}>Cancel</button><button className="admin-button admin-button--primary" disabled={saving}>{saving ? "Saving…" : editingGemstoneId ? "Save changes" : "Save draft"}</button></div>
+              {gemstoneStep===1 && <>
+                <div className="admin-form__section-title">01 · Record identity</div>
+                <label>Reference code *<input required disabled={Boolean(editingGemstoneId)} value={gemstoneForm.referenceCode} onChange={(event) => setGemstoneForm({ ...gemstoneForm, referenceCode: event.target.value.toUpperCase() })} placeholder="RBY-009" /></label>
+                <label>Gemstone name *<input required value={gemstoneForm.name} onChange={(event) => setGemstoneForm({ ...gemstoneForm, name: event.target.value })} placeholder="Natural Ruby" /></label>
+                <label>Category *<select required value={gemstoneForm.category} onChange={(event) => setGemstoneForm({ ...gemstoneForm, category: event.target.value })}><option value="ruby">Ruby</option><option value="sapphire">Blue Sapphire</option><option value="emerald">Emerald</option><option value="rare">Rare Gemstone</option></select></label>
+                <label>Inventory availability<select value={gemstoneForm.availabilityStatus} onChange={(event) => setGemstoneForm({ ...gemstoneForm, availabilityStatus: event.target.value })}><option value="available">Available</option><option value="reserved">Reserved</option><option value="sold">Sold</option><option value="unavailable">Unavailable</option></select></label>
+                <label>Ownership type<select value={gemstoneForm.ownershipType} onChange={(event) => setGemstoneForm({ ...gemstoneForm, ownershipType: event.target.value })}><option value="owned">Company owned</option><option value="consignment">Consignment</option><option value="client_owned">Client owned</option><option value="sourced_to_order">Sourced to order</option></select></label>
+                <p className="admin-form__helper admin-form__full">Publication status is separate from physical availability. New records are saved as drafts and are not shown publicly until you publish them.</p>
+              </>}
+              {gemstoneStep===2 && <>
+                <div className="admin-form__section-title">02 · Gemstone specifications</div>
+                <label>Weight (carats)<input type="number" min="0.01" step="0.01" value={gemstoneForm.weightCarat} onChange={(event) => setGemstoneForm({ ...gemstoneForm, weightCarat: event.target.value })} /></label>
+                <label>Shape<select value={gemstoneForm.shape} onChange={(event)=>setGemstoneForm({...gemstoneForm,shape:event.target.value})}><option value="">Select shape</option>{(gemstoneOptions.shape||[]).map(x=><option key={x.id} value={x.value}>{x.value}</option>)}</select></label>
+                <label>Cut grade<select value={gemstoneForm.cut} onChange={(event)=>setGemstoneForm({...gemstoneForm,cut:event.target.value})}><option value="">Select cut</option>{(gemstoneOptions.cut||[]).map(x=><option key={x.id} value={x.value}>{x.value}</option>)}</select></label>
+                <label>Dimensions (mm)<input value={gemstoneForm.dimensionsMm} onChange={(event)=>setGemstoneForm({...gemstoneForm,dimensionsMm:event.target.value})} placeholder="e.g. 8.2 × 6.1 × 4.3" /></label>
+                <label>Colour<select value={gemstoneForm.colour} onChange={(event)=>setGemstoneForm({...gemstoneForm,colour:event.target.value})}><option value="">Select colour</option>{(gemstoneOptions.colour||[]).map(x=><option key={x.id} value={x.value}>{x.value}</option>)}</select></label>
+                <label>Clarity<select value={gemstoneForm.clarity} onChange={(event)=>setGemstoneForm({...gemstoneForm,clarity:event.target.value})}><option value="">Select clarity</option>{(gemstoneOptions.clarity||[]).map(x=><option key={x.id} value={x.value}>{x.value}</option>)}</select></label>
+                <label>Treatment<select value={gemstoneForm.treatment} onChange={(event)=>setGemstoneForm({...gemstoneForm,treatment:event.target.value})}><option value="">Select treatment</option>{(gemstoneOptions.treatment||[]).map(x=><option key={x.id} value={x.value}>{x.value}</option>)}</select></label>
+                <label>Country of origin<select value={gemstoneForm.origin} onChange={(event)=>setGemstoneForm({...gemstoneForm,origin:event.target.value})}><option value="">Select origin</option>{(gemstoneOptions.origin||[]).map(x=><option key={x.id} value={x.value}>{x.value}</option>)}</select></label>
+                <label>Origin region / mine<input value={gemstoneForm.originRegion} onChange={(event)=>setGemstoneForm({...gemstoneForm,originRegion:event.target.value})} /></label>
+                <label>Certification laboratory<select value={gemstoneForm.certificationLab} onChange={(event)=>setGemstoneForm({...gemstoneForm,certificationLab:event.target.value})}><option value="">Select laboratory</option>{(gemstoneOptions.certification_lab||[]).map(x=><option key={x.id} value={x.value}>{x.value}</option>)}</select></label>
+                <label>Certificate number<input value={gemstoneForm.certificationNumber} onChange={(event)=>setGemstoneForm({...gemstoneForm,certificationNumber:event.target.value})} /></label>
+              </>}
+              {gemstoneStep===3 && <>
+                <div className="admin-form__section-title">03 · Acquisition, supplier and pricing (private)</div>
+                <label>Acquisition cost<input type="number" min="0" step="0.01" value={gemstoneForm.acquisitionCost} onChange={(event)=>setGemstoneForm({...gemstoneForm,acquisitionCost:event.target.value})} /></label>
+                <label>Selling price<input type="number" min="0" step="0.01" value={gemstoneForm.sellingPrice} onChange={(event)=>setGemstoneForm({...gemstoneForm,sellingPrice:event.target.value})} /></label>
+                <label>Currency code<input maxLength={3} placeholder="e.g. HKD" value={gemstoneForm.currencyCode} onChange={(event)=>setGemstoneForm({...gemstoneForm,currencyCode:event.target.value.toUpperCase()})} /></label>
+                <label>Supplier / owner name<input value={gemstoneForm.supplierName} onChange={(event)=>setGemstoneForm({...gemstoneForm,supplierName:event.target.value})} /></label>
+                <label>Supplier reference<input value={gemstoneForm.supplierReference} onChange={(event)=>setGemstoneForm({...gemstoneForm,supplierReference:event.target.value})} /></label>
+                <label>Sourcing method<input value={gemstoneForm.sourcingMethod} onChange={(event)=>setGemstoneForm({...gemstoneForm,sourcingMethod:event.target.value})} placeholder="Direct sourcing, broker, etc." /></label>
+                <label>Stock location<input value={gemstoneForm.stockLocation} onChange={(event)=>setGemstoneForm({...gemstoneForm,stockLocation:event.target.value})} /></label>
+                <label>Acquisition date<input type="date" value={gemstoneForm.acquisitionDate} onChange={(event)=>setGemstoneForm({...gemstoneForm,acquisitionDate:event.target.value})} /></label>
+                <label>Public price display<select value={gemstoneForm.publicPriceMode} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicPriceMode:event.target.value})}><option value="hidden">Hide price</option><option value="enquiry">Enquire for price</option><option value="fixed">Show fixed price</option></select></label>
+                <label className="admin-form__full">Internal notes<textarea rows={3} value={gemstoneForm.internalNotes} onChange={(event)=>setGemstoneForm({...gemstoneForm,internalNotes:event.target.value})} /></label>
+                <p className="admin-form__helper admin-form__full">Acquisition cost, supplier details and internal notes are private and are never returned by the public catalogue API.</p>
+              </>}
+              {gemstoneStep===4 && <>
+                <div className="admin-form__section-title">04 · Public gemstone listing</div>
+                <label>Public display title<input value={gemstoneForm.publicTitle} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicTitle:event.target.value})} placeholder="Defaults to gemstone name" /></label>
+                <label>Public price mode<select value={gemstoneForm.publicPriceMode} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicPriceMode:event.target.value})}><option value="hidden">Hide price</option><option value="enquiry">Enquire for price</option><option value="fixed">Show fixed price</option></select></label>
+                <label className="admin-form__full">Public description<textarea rows={5} value={gemstoneForm.publicDescription} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicDescription:event.target.value})} placeholder="Description displayed on the public gemstone page" /></label>
+                <label className="admin-form__full">Internal description<textarea rows={3} value={gemstoneForm.description} onChange={(event)=>setGemstoneForm({...gemstoneForm,description:event.target.value})} /></label>
+                <label>SEO title<input value={gemstoneForm.seoTitle} onChange={(event)=>setGemstoneForm({...gemstoneForm,seoTitle:event.target.value})} /></label>
+                <label>SEO description<textarea rows={2} value={gemstoneForm.seoDescription} onChange={(event)=>setGemstoneForm({...gemstoneForm,seoDescription:event.target.value})} /></label>
+                <label className="admin-form__full admin-checkbox-label"><input type="checkbox" checked={gemstoneForm.publicVisibility} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicVisibility:event.target.checked})} /> Allow this gemstone to appear in public collections after publication</label>
+                <p className="admin-form__helper admin-form__full">Image and video files and private certificate uploads will be enabled after the storage provider is selected. Do not paste private certificate links here.</p>
+              </>}
+              <div className="admin-form__actions admin-form__full">
+                <button type="button" className="admin-button admin-button--secondary" onClick={()=>gemstoneStep===1?setShowGemstoneForm(false):setGemstoneStep((step)=>step-1)}>{gemstoneStep===1?"Cancel":"Back"}</button>
+                {gemstoneStep<4 ? <button type="button" className="admin-button admin-button--primary" onClick={()=>setGemstoneStep((step)=>step+1)} disabled={gemstoneStep===1&&(!gemstoneForm.referenceCode.trim()||!gemstoneForm.name.trim())}>Continue →</button> : <button className="admin-button admin-button--primary" disabled={saving}>{saving?"Saving…":editingGemstoneId?"Save changes":"Save gemstone draft"}</button>}
+              </div>
             </form>
           </section></div>}
         </>
@@ -715,7 +785,7 @@ export function AdminPortal() {
     };
     const info = deferred[section] || deferred.settings;
     return <><div className="admin-page-heading"><div><p className="admin-eyebrow">CONFIGURATION / ROADMAP</p><h1>{selectedTitle}</h1><p>Planned module — not presented as live functionality.</p></div></div><section className="admin-deferred-panel"><span className="admin-deferred-icon">◇</span><h2>{info.title}</h2><p>{info.description}</p><ul>{info.items.map((item) => <li key={item}>{item}</li>)}</ul></section></>;
-  }, [checking, admin, section, dashboard, gemstones, enquiries, customers, staff, activity, pageError, search, enquirySearch, showGemstoneForm, editingGemstoneId, showStaffForm, saving, formMessage, gemstoneForm, staffForm, editingStaffId, selectedEnquiry, enquiryNotes, noteDraft]);
+  }, [checking, admin, section, dashboard, gemstones, enquiries, customers, staff, activity, pageError, search, enquirySearch, showGemstoneForm, editingGemstoneId, showStaffForm, saving, formMessage, gemstoneForm, staffForm, editingStaffId, selectedEnquiry, enquiryNotes, noteDraft, gemstoneStep, gemstoneOptions]);
 
   if (checking || !admin) {
     return <main className="admin-app"><div className="admin-loading">Loading owner portal…</div></main>;
