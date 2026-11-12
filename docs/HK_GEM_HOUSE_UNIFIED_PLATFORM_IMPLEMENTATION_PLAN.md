@@ -277,3 +277,12 @@ A module is not complete when only its screen exists. It is complete only when i
 6. Implement Phase 1 before enabling the remaining deferred admin modules.
 
 **Current boundary:** the unified architecture is the target and the shared local API/database foundation exists. Full module completion and live production connection are not yet claimed.
+
+
+## 11. Detailed stone inventory specification
+
+The complete field-level specification is maintained in [HK Gem House Stone Inventory & Media Specification](./HK_GEM_HOUSE_STONE_INVENTORY_AND_MEDIA_SPEC.md). This is the required implementation reference for the inventory wizard; it supersedes the small initial add/edit form where they differ.
+
+The stone wizard must have four steps: Stone Details, Certification, Pricing, and Photos & Videos. It must include every field, option catalogue, upload constraint, preview/review behaviour, supplier/ownership linkage, public-safe API rule and acceptance test stated in that specification.
+
+**Do not mark the inventory-to-public-catalogue integration complete** until an owner-created record with complete details and approved media can be created, published, and verified on the actual public collection and detail routes from the same database.
