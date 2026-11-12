@@ -29,6 +29,16 @@
   border-right: 1px solid rgba(255,255,255,.08);
 }
 .admin-sidebar__brand { display: flex; align-items: center; gap: 12px; padding: 3px 8px 20px; }
+.admin-sidebar__logo,
+.admin-auth__brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  object-fit: contain;
+  object-position: center;
+}
+.admin-sidebar__logo { width: 48px; height: 53px; }
+.admin-auth__brand-mark { width: 52px; height: 58px; }
+
 .admin-brand-mark {
   width: 43px;
   height: 43px;
