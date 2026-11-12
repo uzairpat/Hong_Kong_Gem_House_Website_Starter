@@ -396,6 +396,22 @@ export function AdminPortal() {
     const result = await apiRequest<DashboardData>("/api/admin/dashboard/summary");
     setDashboard(result);
   };
+  const addGemstoneOption = async (optionType: string) => {
+    const value = window.prompt("Enter a new " + optionType.replace(/_/g, " ") + " option:");
+    if (!value?.trim()) return;
+    try {
+      await apiRequest("/api/admin/gemstone-options", {
+        method: "POST",
+        body: JSON.stringify({ optionType, value: value.trim() }),
+      });
+      const options = await apiRequest<{ data: Record<string, Array<{ id: string; value: string }>> }>("/api/admin/gemstone-options");
+      setGemstoneOptions(options.data || {});
+      setFormMessage("New " + optionType.replace(/_/g, " ") + " option added.");
+    } catch (error) {
+      setFormMessage(error instanceof Error ? error.message : "Could not add this option.");
+    }
+  };
+
   const loadGemstones = async () => {
     const [result, options] = await Promise.all([
       apiRequest<{ data: Gemstone[] }>("/api/admin/gemstones?search=" + encodeURIComponent(search)),
