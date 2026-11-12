@@ -565,14 +565,19 @@ router.post("/gemstones", async (request, response) => {
   const input = parsed.data;
   try {
     const result = await pool.query(
-      "INSERT INTO gemstones (reference_code, name, category, weight_carat, shape, origin, colour, clarity, treatment, certification_lab, certification_number, description, status, availability_status, acquisition_cost, selling_price, currency_code, public_price_mode, public_visibility, is_sample, created_by, updated_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'draft',$13,$14,$15,$16,$17,$18,FALSE,$19,$19) RETURNING *",
+      "INSERT INTO gemstones (reference_code, name, category, weight_carat, shape, origin, colour, clarity, treatment, certification_lab, certification_number, description, status, availability_status, acquisition_cost, selling_price, currency_code, public_price_mode, public_visibility, cut, dimensions_mm, origin_region, sourcing_method, supplier_name, supplier_reference, ownership_type, stock_location, acquisition_date, internal_notes, public_title, public_description, seo_title, seo_description, is_sample, created_by, updated_by) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'draft',$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,FALSE,$33,$33) RETURNING *",
       [
         input.referenceCode, input.name, input.category, input.weightCarat ?? null,
         input.shape || null, input.origin || null, input.colour || null, input.clarity || null,
         input.treatment || null, input.certificationLab || null, input.certificationNumber || null,
         input.description || null, input.availabilityStatus || "available",
         input.acquisitionCost ?? null, input.sellingPrice ?? null, input.currencyCode ?? null,
-        input.publicPriceMode || "hidden", input.publicVisibility ?? true, request.session.admin!.id,
+        input.publicPriceMode || "hidden", input.publicVisibility ?? true, input.cut || null,
+        input.dimensionsMm || null, input.originRegion || null, input.sourcingMethod || null,
+        input.supplierName || null, input.supplierReference || null, input.ownershipType || "owned",
+        input.stockLocation || null, input.acquisitionDate || null, input.internalNotes || null,
+        input.publicTitle || null, input.publicDescription || null, input.seoTitle || null,
+        input.seoDescription || null, request.session.admin!.id,
       ],
     );
     await recordAudit(request, "gemstone_created", "gemstone", result.rows[0].id, null, result.rows[0]);
