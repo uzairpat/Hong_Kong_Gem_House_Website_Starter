@@ -2,6 +2,7 @@ import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import { z } from "zod";
 import { pool } from "../db/pool.js";
+import { env } from "../config/env.js";
 
 const router = Router();
 const enquiryLimiter = rateLimit({
@@ -58,7 +59,7 @@ router.post("/enquiries", enquiryLimiter, async (request, response) => {
     let gemstoneId: string | null = null;
     if (input.gemstoneReference) {
       const gemstone = await client.query<{ id: string }>(
-        "SELECT id FROM gemstones WHERE UPPER(reference_code) = UPPER($1) AND status = 'published' AND public_visibility = TRUE AND is_sample = FALSE LIMIT 1",
+        `SELECT id FROM gemstones WHERE UPPER(reference_code) = UPPER($1) AND status = 'published' AND public_visibility = TRUE${env.NODE_ENV === "production" ? " AND is_sample = FALSE" : ""} LIMIT 1`,
         [input.gemstoneReference],
       );
       if (!gemstone.rowCount) {
