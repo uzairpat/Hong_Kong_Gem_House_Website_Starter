@@ -198,3 +198,7 @@
   .gem-category-stone__image-wrap { aspect-ratio: 1.75 / 1; }
   .gem-category-empty { padding: 35px 18px; }
 }
+
+.gem-category-stone__description { margin:0 0 12px;color:#706452;font:12px/1.55 var(--serif); }
+.gem-category-stone__price { margin:0 0 10px;color:#8b642d;font:600 15px/1.3 var(--serif); }
+.gem-category-stone__enquire + .gem-category-stone__enquire { margin-top:8px; }
