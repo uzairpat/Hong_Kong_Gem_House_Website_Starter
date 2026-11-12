@@ -378,7 +378,7 @@ export function AdminPortal() {
     acquisitionCost: "", sellingPrice: "", currencyCode: "", publicPriceMode: "hidden",
     cut: "", dimensionsMm: "", originRegion: "", sourcingMethod: "", supplierName: "",
     supplierReference: "", ownershipType: "owned", stockLocation: "", acquisitionDate: "",
-    internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "",
+    internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "", publicVisibility: true,
   });
   const [staffForm, setStaffForm] = useState({ fullName: "", email: "", phone: "", department: "", jobTitle: "", employmentStatus: "active" });
 
@@ -471,6 +471,7 @@ export function AdminPortal() {
       sellingPrice: gemstone.selling_price || "",
       currencyCode: gemstone.currency_code || "",
       publicPriceMode: gemstone.public_price_mode,
+      publicVisibility: gemstone.public_visibility,
       cut: gemstone.cut || "", dimensionsMm: gemstone.dimensions_mm || "",
       originRegion: gemstone.origin_region || "", sourcingMethod: gemstone.sourcing_method || "",
       supplierName: gemstone.supplier_name || "", supplierReference: gemstone.supplier_reference || "",
@@ -519,7 +520,7 @@ export function AdminPortal() {
         acquisitionCost: "", sellingPrice: "", currencyCode: "", publicPriceMode: "hidden",
         cut: "", dimensionsMm: "", originRegion: "", sourcingMethod: "", supplierName: "",
         supplierReference: "", ownershipType: "owned", stockLocation: "", acquisitionDate: "",
-        internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "",
+        internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "", publicVisibility: true,
       });
       await loadGemstones();
       setFormMessage(editingGemstoneId ? "Gemstone details updated." : "Gemstone draft created.");
