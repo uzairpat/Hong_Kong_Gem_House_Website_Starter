@@ -55,6 +55,20 @@ const gemstoneCreateSchema = z.object({
   currencyCode: z.string().trim().length(3).transform((value) => value.toUpperCase()).nullable().optional(),
   publicPriceMode: z.enum(["hidden", "enquiry", "fixed"]).optional(),
   publicVisibility: z.boolean().optional(),
+  cut: z.string().trim().max(100).nullable().optional(),
+  dimensionsMm: z.string().trim().max(100).nullable().optional(),
+  originRegion: z.string().trim().max(120).nullable().optional(),
+  sourcingMethod: z.string().trim().max(120).nullable().optional(),
+  supplierName: z.string().trim().max(180).nullable().optional(),
+  supplierReference: z.string().trim().max(120).nullable().optional(),
+  ownershipType: z.enum(["owned", "consignment", "client_owned", "sourced_to_order"]).optional(),
+  stockLocation: z.string().trim().max(180).nullable().optional(),
+  acquisitionDate: z.string().date().nullable().optional(),
+  internalNotes: z.string().trim().max(8000).nullable().optional(),
+  publicTitle: z.string().trim().max(180).nullable().optional(),
+  publicDescription: z.string().trim().max(8000).nullable().optional(),
+  seoTitle: z.string().trim().max(180).nullable().optional(),
+  seoDescription: z.string().trim().max(320).nullable().optional(),
 });
 const gemstoneUpdateSchema = gemstoneCreateSchema.omit({ referenceCode: true }).partial();
 
@@ -478,6 +492,35 @@ router.get("/dashboard/summary", async (_request, response) => {
   });
 });
 
+router.get("/gemstone-options", async (_request, response) => {
+  const result = await pool.query(
+    "SELECT id, option_type, value, display_order, is_active FROM gemstone_option_values WHERE is_active = TRUE ORDER BY option_type, display_order, value",
+  );
+  const grouped: Record<string, Array<{ id: string; value: string }>> = {};
+  for (const row of result.rows) {
+    (grouped[row.option_type] ||= []).push({ id: row.id, value: row.value });
+  }
+  response.json({ data: grouped });
+});
+
+router.post("/gemstone-options", async (request, response) => {
+  const schema = z.object({
+    optionType: z.enum(["shape", "colour", "clarity", "origin", "treatment", "cut", "certification_lab"]),
+    value: z.string().trim().min(1).max(120),
+  });
+  const parsed = schema.safeParse(request.body);
+  if (!parsed.success) {
+    response.status(400).json({ error: "Enter a valid option type and value." });
+    return;
+  }
+  const result = await pool.query(
+    "INSERT INTO gemstone_option_values (option_type, value, created_by) VALUES ($1, $2, $3) ON CONFLICT (option_type, value) DO UPDATE SET is_active = TRUE RETURNING id, option_type, value",
+    [parsed.data.optionType, parsed.data.value, request.session.admin!.id],
+  );
+  await recordAudit(request, "gemstone_option_created", "gemstone_option", result.rows[0].id, null, result.rows[0]);
+  response.status(201).json({ data: result.rows[0] });
+});
+
 router.get("/gemstones", async (request, response) => {
   const search = typeof request.query.search === "string" ? request.query.search.trim() : "";
   const category = typeof request.query.category === "string" ? request.query.category : "";
@@ -507,7 +550,7 @@ router.get("/gemstones", async (request, response) => {
   const count = await pool.query("SELECT COUNT(*)::int AS total FROM gemstones g WHERE " + where, values);
   values.push(pageSize, (page - 1) * pageSize);
   const result = await pool.query(
-    "SELECT g.id, g.reference_code, g.name, g.category, g.weight_carat, g.shape, g.origin, g.colour, g.clarity, g.treatment, g.certification_lab, g.certification_number, g.description, g.status, g.availability_status, g.public_visibility, g.acquisition_cost::text, g.selling_price::text, g.currency_code, g.public_price_mode, g.created_at, g.updated_at, (SELECT gi.image_path FROM gemstone_images gi WHERE gi.gemstone_id = g.id ORDER BY gi.is_primary DESC, gi.sort_order ASC, gi.created_at ASC LIMIT 1) AS image_path FROM gemstones g WHERE " + where + " ORDER BY g.updated_at DESC, g.reference_code ASC LIMIT $" + (values.length - 1) + " OFFSET $" + values.length,
+    "SELECT g.id, g.reference_code, g.name, g.category, g.weight_carat, g.shape, g.origin, g.colour, g.clarity, g.treatment, g.certification_lab, g.certification_number, g.description, g.status, g.availability_status, g.public_visibility, g.acquisition_cost::text, g.selling_price::text, g.currency_code, g.public_price_mode, g.cut, g.dimensions_mm, g.origin_region, g.sourcing_method, g.supplier_name, g.supplier_reference, g.ownership_type, g.stock_location, g.acquisition_date, g.internal_notes, g.public_title, g.public_description, g.seo_title, g.seo_description, g.created_at, g.updated_at, (SELECT gi.image_path FROM gemstone_images gi WHERE gi.gemstone_id = g.id ORDER BY gi.is_primary DESC, gi.sort_order ASC, gi.created_at ASC LIMIT 1) AS image_path FROM gemstones g WHERE " + where + " ORDER BY g.updated_at DESC, g.reference_code ASC LIMIT $" + (values.length - 1) + " OFFSET $" + values.length,
     values,
   );
   response.json({ data: result.rows, count: count.rows[0].total, page, pageSize });
@@ -556,7 +599,12 @@ router.patch("/gemstones/:id", async (request, response) => {
     description: "description", availabilityStatus: "availability_status",
     acquisitionCost: "acquisition_cost", sellingPrice: "selling_price",
     currencyCode: "currency_code", publicPriceMode: "public_price_mode",
-    publicVisibility: "public_visibility",
+    publicVisibility: "public_visibility", cut: "cut", dimensionsMm: "dimensions_mm",
+    originRegion: "origin_region", sourcingMethod: "sourcing_method", supplierName: "supplier_name",
+    supplierReference: "supplier_reference", ownershipType: "ownership_type",
+    stockLocation: "stock_location", acquisitionDate: "acquisition_date", internalNotes: "internal_notes",
+    publicTitle: "public_title", publicDescription: "public_description",
+    seoTitle: "seo_title", seoDescription: "seo_description",
   };
   const before = await pool.query("SELECT * FROM gemstones WHERE id = $1 AND is_sample = FALSE", [request.params.id]);
   if (!before.rowCount) {
