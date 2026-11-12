@@ -577,7 +577,12 @@ router.patch("/gemstones/:id", async (request, response) => {
 
 async function changeGemstoneStatus(request: Request, response: Response, next: NextFunction, status: "draft" | "published" | "archived"): Promise<void> {
   try {
-    const before = await pool.query("SELECT * FROM gemstones WHERE id = $1 AND is_sample = FALSE", [request.params.id]);
+    const gemstoneId = Array.isArray(request.params.id) ? request.params.id[0] : request.params.id;
+    if (typeof gemstoneId !== "string" || !gemstoneId) {
+      response.status(400).json({ error: "A valid gemstone ID is required." });
+      return;
+    }
+    const before = await pool.query("SELECT * FROM gemstones WHERE id = $1 AND is_sample = FALSE", [gemstoneId]);
     if (!before.rowCount) {
       response.status(404).json({ error: "Gemstone not found." });
       return;
@@ -591,9 +596,9 @@ async function changeGemstoneStatus(request: Request, response: Response, next: 
     }
     const result = await pool.query(
       "UPDATE gemstones SET status = $1, updated_by = $2, updated_at = NOW() WHERE id = $3 AND is_sample = FALSE RETURNING *",
-      [status, request.session.admin!.id, request.params.id],
+      [status, request.session.admin!.id, gemstoneId],
     );
-    await recordAudit(request, "gemstone_" + status, "gemstone", request.params.id, before.rows[0], result.rows[0]);
+    await recordAudit(request, "gemstone_" + status, "gemstone", gemstoneId, before.rows[0], result.rows[0]);
     response.json({ data: result.rows[0] });
   } catch (error) {
     next(error);
