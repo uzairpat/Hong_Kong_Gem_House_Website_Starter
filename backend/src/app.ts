@@ -1,13 +1,14 @@
 import cors from "cors";
 import express, { type ErrorRequestHandler } from "express";
 import helmet from "helmet";
-import { env } from "./config/env.js";
-import { pool } from "./db/pool.js";
-
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { csrfSync } from "csrf-sync";
+import { env } from "./config/env.js";
+import { pool } from "./db/pool.js";
 import authRouter from "./routes/auth.js";
+import adminRouter from "./routes/admin.js";
+import enquiriesRouter from "./routes/enquiries.js";
 
 export const app = express();
 
@@ -24,7 +25,6 @@ app.use(cors({
       callback(null, true);
       return;
     }
-
     callback(new Error("This origin is not allowed by the API CORS policy."));
   },
   credentials: true,
@@ -34,9 +34,7 @@ app.use(express.json({ limit: "1mb" }));
 const PgSessionStore = connectPgSimple(session);
 const isProduction = env.NODE_ENV === "production";
 
-if (isProduction) {
-  app.set("trust proxy", 1);
-}
+if (isProduction) app.set("trust proxy", 1);
 
 app.use(session({
   name: "hkg.sid",
@@ -69,10 +67,7 @@ const {
 app.get("/api/auth/csrf", (request, response) => {
   response.json({ csrfToken: generateToken(request) });
 });
-
 app.use(csrfSynchronisedProtection);
-
-
 
 app.get("/api/health", async (_request, response) => {
   try {
@@ -92,46 +87,40 @@ app.get("/api/health", async (_request, response) => {
   }
 });
 
-const catalogueSelect = `
-  SELECT
-    g.id,
-    g.reference_code,
-    g.name,
-    g.category,
-    g.weight_carat,
-    g.shape,
-    g.origin,
-    g.colour,
-    g.clarity,
-    g.treatment,
-    g.certification_lab,
-    g.certification_number,
-    g.description,
-    g.is_sample,
-    g.created_at,
-    (
-      SELECT gi.image_path
-      FROM gemstone_images gi
-      WHERE gi.gemstone_id = g.id
-      ORDER BY gi.is_primary DESC, gi.sort_order ASC, gi.created_at ASC
-      LIMIT 1
-    ) AS image_path
-  FROM gemstones g
-`;
+const catalogueSelect = [
+  "SELECT",
+  "  g.id,",
+  "  g.reference_code,",
+  "  g.name,",
+  "  g.category,",
+  "  g.weight_carat,",
+  "  g.shape,",
+  "  g.origin,",
+  "  g.colour,",
+  "  g.clarity,",
+  "  g.treatment,",
+  "  g.certification_lab,",
+  "  g.certification_number,",
+  "  g.description,",
+  "  g.availability_status,",
+  "  g.public_price_mode,",
+  "  CASE WHEN g.public_price_mode = 'fixed' THEN g.selling_price::text ELSE NULL END AS public_price,",
+  "  g.is_sample,",
+  "  g.created_at,",
+  "  (SELECT gi.image_path FROM gemstone_images gi WHERE gi.gemstone_id = g.id ORDER BY gi.is_primary DESC, gi.sort_order ASC, gi.created_at ASC LIMIT 1) AS image_path",
+  "FROM gemstones g",
+].join("\n");
 
 app.get("/api/gemstones", async (request, response, next) => {
   try {
-    const conditions = ["g.status = 'published'"];
+    const conditions = ["g.status = 'published'", "g.public_visibility = TRUE"];
     const values: string[] = [];
 
-    if (env.NODE_ENV === "production") {
-      conditions.push("g.is_sample = FALSE");
-    }
+    if (env.NODE_ENV === "production") conditions.push("g.is_sample = FALSE");
 
     const category = typeof request.query.category === "string"
       ? request.query.category.trim().toLowerCase()
       : "";
-
     if (category) {
       const validCategories = ["ruby", "sapphire", "emerald", "rare"];
       if (!validCategories.includes(category)) {
@@ -139,26 +128,20 @@ app.get("/api/gemstones", async (request, response, next) => {
         return;
       }
       values.push(category);
-      conditions.push(`g.category = $${values.length}`);
+      conditions.push("g.category = $" + values.length);
     }
 
-    const search = typeof request.query.search === "string"
-      ? request.query.search.trim()
-      : "";
-
+    const search = typeof request.query.search === "string" ? request.query.search.trim() : "";
     if (search) {
-      values.push(`%${search}%`);
-      const parameter = values.length;
-      conditions.push(`(g.reference_code ILIKE $${parameter} OR g.name ILIKE $${parameter})`);
+      values.push("%" + search + "%");
+      conditions.push("(g.reference_code ILIKE $" + values.length + " OR g.name ILIKE $" + values.length + ")");
     }
 
     const result = await pool.query(
-      `${catalogueSelect}
-       WHERE ${conditions.join(" AND ")}
-       ORDER BY g.created_at DESC, g.reference_code ASC`,
+      catalogueSelect + "\nWHERE " + conditions.join(" AND ") +
+      "\nORDER BY g.created_at DESC, g.reference_code ASC",
       values,
     );
-
     response.json({ data: result.rows, count: result.rowCount ?? 0 });
   } catch (error) {
     next(error);
@@ -167,23 +150,21 @@ app.get("/api/gemstones", async (request, response, next) => {
 
 app.get("/api/gemstones/:referenceCode", async (request, response, next) => {
   try {
-    const conditions = ["g.reference_code = $1", "g.status = 'published'"];
-    if (env.NODE_ENV === "production") {
-      conditions.push("g.is_sample = FALSE");
-    }
+    const conditions = [
+      "g.reference_code = $1",
+      "g.status = 'published'",
+      "g.public_visibility = TRUE",
+    ];
+    if (env.NODE_ENV === "production") conditions.push("g.is_sample = FALSE");
 
     const result = await pool.query(
-      `${catalogueSelect}
-       WHERE ${conditions.join(" AND ")}
-       LIMIT 1`,
+      catalogueSelect + "\nWHERE " + conditions.join(" AND ") + "\nLIMIT 1",
       [request.params.referenceCode.toUpperCase()],
     );
-
     if (!result.rowCount) {
       response.status(404).json({ error: "Gemstone not found." });
       return;
     }
-
     response.json({ data: result.rows[0] });
   } catch (error) {
     next(error);
@@ -191,14 +172,14 @@ app.get("/api/gemstones/:referenceCode", async (request, response, next) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api", enquiriesRouter);
 
 app.use((_request, response) => {
   response.status(404).json({ error: "API endpoint not found." });
 });
 
-
 const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => {
-  // Handle CSRF validation errors
   if (
     error === invalidCsrfTokenError ||
     (error instanceof Error && error.message.toLowerCase().includes("csrf"))
@@ -208,12 +189,8 @@ const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => 
     });
     return;
   }
-
   console.error("Unhandled API error:", error);
-
-  response.status(500).json({
-    error: "Internal server error.",
-  });
+  response.status(500).json({ error: "Internal server error." });
 };
 
 app.use(errorHandler);

@@ -1,4 +1,3 @@
-
 import "dotenv/config";
 import { z } from "zod";
 
@@ -10,11 +9,14 @@ const envSchema = z.object({
   DATABASE_SSL: z.enum(["true", "false"]).default("false")
     .transform((value) => value === "true"),
 
-  CORS_ORIGIN: z.string().default("http://localhost:5173"),
+  CORS_ORIGIN: z.string().default("http://localhost:5173,http://localhost:5174"),
 
   SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be at least 32 characters"),
-
   APP_BASE_URL: z.string().url().default("http://localhost:5173"),
+
+  ADMIN_OWNER_EMAIL: z.string().default(""),
+  ADMIN_OWNER_PASSWORD: z.string().default(""),
+  MFA_ENCRYPTION_KEY: z.string().default(""),
 
   SMTP_HOST: z.string().default(""),
   SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(587),
