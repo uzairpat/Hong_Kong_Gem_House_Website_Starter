@@ -15,6 +15,9 @@ type GemstoneRecord = {
   colour: string | null;
   clarity: string | null;
   treatment: string | null;
+  cut?: string | null;
+  dimensions_mm?: string | null;
+  origin_region?: string | null;
   certification_lab: string | null;
   certification_number: string | null;
   description: string | null;
@@ -183,6 +186,8 @@ export default function GemstoneCategoryCollectionPage({ slug }: { slug: Categor
                     {stone.weight_carat !== null && <div><dt>Weight</dt><dd>{Number(stone.weight_carat).toFixed(2)} ct</dd></div>}
                     {stone.shape && <div><dt>Shape</dt><dd>{stone.shape}</dd></div>}
                     {stone.origin && <div><dt>Origin</dt><dd>{stone.origin}</dd></div>}
+                    {stone.origin_region && <div><dt>Region</dt><dd>{stone.origin_region}</dd></div>}
+                    {stone.dimensions_mm && <div><dt>Dimensions</dt><dd>{stone.dimensions_mm}</dd></div>}
                     {stone.colour && <div><dt>Colour</dt><dd>{stone.colour}</dd></div>}
                     {stone.clarity && <div><dt>Clarity</dt><dd>{stone.clarity}</dd></div>}
                     {stone.treatment && <div><dt>Treatment</dt><dd>{stone.treatment}</dd></div>}
