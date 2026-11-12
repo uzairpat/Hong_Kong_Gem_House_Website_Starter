@@ -234,3 +234,16 @@
 .admin-empty__note { margin:0;padding:14px;text-align:center;color:#9a907e;font:10px/1.5 Arial,sans-serif; }
 .admin-note-form { padding-top:13px;border-top:1px solid #eee6d9; }
 .admin-note-form textarea { min-height:76px; }
+
+.admin-gemstone-wizard { width:min(100%,980px); }
+.admin-gemstone-steps { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:0 0 23px;padding:0 0 16px;border-bottom:1px solid #eee6d9; }
+.admin-gemstone-steps button { min-width:0;display:flex;align-items:center;gap:8px;padding:9px 7px;border:1px solid transparent;color:#958976;background:#f8f5ee;text-align:left;font:600 10px/1.3 Arial,sans-serif;cursor:pointer; }
+.admin-gemstone-steps button span { width:23px;height:23px;flex:0 0 23px;display:grid;place-items:center;border:1px solid #d8cbb6;border-radius:50%;color:#89734f;font:600 10px/1 Arial,sans-serif; }
+.admin-gemstone-steps button.is-current { border-color:#d7c29d;color:#765629;background:#f7f0e2; }
+.admin-gemstone-steps button.is-current span,.admin-gemstone-steps button.is-complete span { border-color:#a77b3c;color:#fff;background:#a77b3c; }
+.admin-checkbox-label { flex-direction:row!important;align-items:center;gap:10px!important;padding:12px;border:1px solid #e6ddce;background:#faf6ee; }
+.admin-checkbox-label input { width:16px!important;min-width:16px!important;min-height:16px!important; }
+@media(max-width:620px) {
+  .admin-gemstone-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .admin-gemstone-steps button { font-size:9px; }
+}
