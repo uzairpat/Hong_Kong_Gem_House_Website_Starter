@@ -602,6 +602,7 @@ async function changeGemstoneStatus(request: Request, response: Response, next: 
 router.post("/gemstones/:id/publish", (request, response, next) => void changeGemstoneStatus(request, response, next, "published"));
 router.post("/gemstones/:id/unpublish", (request, response, next) => void changeGemstoneStatus(request, response, next, "draft"));
 router.post("/gemstones/:id/archive", (request, response, next) => void changeGemstoneStatus(request, response, next, "archived"));
+router.post("/gemstones/:id/restore", (request, response, next) => void changeGemstoneStatus(request, response, next, "draft"));
 router.get("/gemstones/:id/history", async (request, response) => {
   const result = await pool.query(
     "SELECT id, action, before_data, after_data, occurred_at FROM audit_logs WHERE entity_type = 'gemstone' AND entity_id = $1 ORDER BY occurred_at DESC LIMIT 100",
