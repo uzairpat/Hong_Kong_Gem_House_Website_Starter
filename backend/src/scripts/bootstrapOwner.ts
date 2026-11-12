@@ -13,13 +13,6 @@ async function bootstrapOwner(): Promise<void> {
     throw new Error("The initial owner password must be between 16 and 128 characters.");
   }
 
-  const existingAdmin = await pool.query(
-    "SELECT id FROM users WHERE account_type = 'admin' LIMIT 1",
-  );
-  if (existingAdmin.rowCount) {
-    throw new Error("An administrator already exists. The one-time owner bootstrap will not create or replace another account.");
-  }
-
   const passwordHash = await argon2.hash(password, {
     type: argon2.argon2id,
     memoryCost: 65536,
@@ -30,6 +23,15 @@ async function bootstrapOwner(): Promise<void> {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
+    // Serialize concurrent bootstrap attempts before checking the one-owner invariant.
+    await client.query("SELECT pg_advisory_xact_lock(hashtext('hkg-owner-bootstrap'))");
+    const existingAdmin = await client.query(
+      "SELECT id FROM users WHERE account_type = 'admin' LIMIT 1",
+    );
+    if (existingAdmin.rowCount) {
+      throw new Error("An administrator already exists. The one-time owner bootstrap will not create or replace another account.");
+    }
+
     const user = await client.query<{ id: string }>(
       "INSERT INTO users (email, full_name, password_hash, account_type, status, email_verified_at) VALUES ($1,$2,$3,'admin','active',NOW()) RETURNING id",
       [email, "Hong Kong Gem House Owner", passwordHash],
