@@ -530,12 +530,14 @@ export function AdminPortal() {
     }
   };
 
-  const updateGemstoneStatus = async (gemstone: Gemstone, action: "publish" | "unpublish" | "archive") => {
+  const updateGemstoneStatus = async (gemstone: Gemstone, action: "publish" | "unpublish" | "archive" | "restore") => {
     const prompt = action === "archive"
       ? "Archive " + gemstone.reference_code + "? It will no longer appear in the public catalogue."
       : action === "publish"
         ? "Publish " + gemstone.reference_code + " to the public catalogue?"
-        : "Unpublish " + gemstone.reference_code + "?";
+        : action === "restore"
+          ? "Restore " + gemstone.reference_code + " as an unpublished draft?"
+          : "Unpublish " + gemstone.reference_code + "?";
     if (!window.confirm(prompt)) return;
     setPageError("");
     try {
@@ -613,7 +615,7 @@ export function AdminPortal() {
           <div className="admin-toolbar"><input aria-label="Search gemstone inventory" placeholder="Search reference, name or origin…" value={search} onChange={(event) => setSearch(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") void loadGemstones(); }} /><button className="admin-button admin-button--secondary" onClick={() => void loadGemstones()}>Search</button></div>
           {formMessage && <p className="admin-inline-message">{formMessage}</p>}
           <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Reference / Gemstone</th><th>Category</th><th>Carat</th><th>Availability</th><th>Publication</th><th>Price display</th><th>Updated</th><th>Actions</th></tr></thead><tbody>
-            {gemstones.map((gemstone) => <tr key={gemstone.id}><td><strong>{gemstone.reference_code}</strong><small>{gemstone.name}</small></td><td>{labelFor(gemstone.category)}</td><td>{gemstone.weight_carat ?? "—"}</td><td><span className={"admin-pill admin-pill--" + gemstone.availability_status}>{labelFor(gemstone.availability_status)}</span></td><td><span className={"admin-pill admin-pill--" + gemstone.status}>{labelFor(gemstone.status)}</span></td><td>{labelFor(gemstone.public_price_mode)}</td><td>{formatDate(gemstone.updated_at)}</td><td><div className="admin-row-actions"><button onClick={() => beginEditGemstone(gemstone)}>Edit</button>{gemstone.status === "published" ? <button onClick={() => void updateGemstoneStatus(gemstone, "unpublish")}>Unpublish</button> : <button onClick={() => void updateGemstoneStatus(gemstone, "publish")} disabled={gemstone.status === "archived"}>Publish</button>}<button onClick={() => void updateGemstoneStatus(gemstone, "archive")} disabled={gemstone.status === "archived"}>Archive</button></div></td></tr>)}
+            {gemstones.map((gemstone) => <tr key={gemstone.id}><td><strong>{gemstone.reference_code}</strong><small>{gemstone.name}</small></td><td>{labelFor(gemstone.category)}</td><td>{gemstone.weight_carat ?? "—"}</td><td><span className={"admin-pill admin-pill--" + gemstone.availability_status}>{labelFor(gemstone.availability_status)}</span></td><td><span className={"admin-pill admin-pill--" + gemstone.status}>{labelFor(gemstone.status)}</span></td><td>{labelFor(gemstone.public_price_mode)}</td><td>{formatDate(gemstone.updated_at)}</td><td><div className="admin-row-actions"><button onClick={() => beginEditGemstone(gemstone)}>Edit</button>{gemstone.status === "archived" ? <button onClick={() => void updateGemstoneStatus(gemstone, "restore")}>Restore</button> : gemstone.status === "published" ? <button onClick={() => void updateGemstoneStatus(gemstone, "unpublish")}>Unpublish</button> : <button onClick={() => void updateGemstoneStatus(gemstone, "publish")}>Publish</button>}<button onClick={() => void updateGemstoneStatus(gemstone, "archive")} disabled={gemstone.status === "archived"}>Archive</button></div></td></tr>)}
             {!gemstones.length && <tr><td colSpan={8}><EmptyState title="No inventory records found" text="Add the first verified gemstone record, or adjust your search." /></td></tr>}
           </tbody></table></div>
           {showGemstoneForm && <div className="admin-modal-backdrop" role="presentation"><section className="admin-modal" role="dialog" aria-modal="true" aria-labelledby="gemstone-form-title"><div className="admin-panel__heading"><div><p className="admin-eyebrow">NEW INVENTORY RECORD</p><h2 id="gemstone-form-title">{editingGemstoneId ? "Edit gemstone" : "Add gemstone"}</h2></div><button className="admin-icon-button" onClick={() => setShowGemstoneForm(false)} aria-label="Close">×</button></div>
