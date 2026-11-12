@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './GemstoneCategoryCollectionPage.css';
 
-type CategorySlug = 'blue-sapphire' | 'emerald' | 'rare-gemstones';
+type CategorySlug = 'ruby' | 'blue-sapphire' | 'emerald' | 'rare-gemstones';
 
 type GemstoneRecord = {
   id: string;
@@ -18,6 +18,10 @@ type GemstoneRecord = {
   certification_lab: string | null;
   certification_number: string | null;
   description: string | null;
+  public_title?: string | null;
+  public_description?: string | null;
+  public_price?: string | null;
+  availability_status?: string;
   is_sample: boolean;
   image_path: string | null;
 };
@@ -34,6 +38,14 @@ const categoryDetails: Record<CategorySlug, {
   tagline: string;
   image: string;
 }> = {
+  ruby: {
+    apiCategory: 'ruby',
+    name: 'Ruby Collection',
+    eyebrow: 'PASSION | RARITY | TIMELESS BEAUTY',
+    tagline: 'Exceptional Natural Rubies',
+    description: 'Discover our ruby selection, with each gemstone individually recorded and presented from the Hong Kong Gem House inventory.',
+    image: '/assets/ruby-collection-hero-bg-hd.png',
+  },
   'blue-sapphire': {
     apiCategory: 'sapphire',
     name: 'Blue Sapphire Collection',
@@ -165,14 +177,21 @@ export default function GemstoneCategoryCollectionPage({ slug }: { slug: Categor
                 </div>
                 <div className="gem-category-stone__body">
                   <p className="gem-category-stone__reference">{stone.reference_code}</p>
-                  <h3>{stone.name}</h3>
+                  <h3>{stone.public_title || stone.name}</h3>
+                  {stone.public_description && <p className="gem-category-stone__description">{stone.public_description}</p>}
                   <dl>
                     {stone.weight_carat !== null && <div><dt>Weight</dt><dd>{Number(stone.weight_carat).toFixed(2)} ct</dd></div>}
                     {stone.shape && <div><dt>Shape</dt><dd>{stone.shape}</dd></div>}
                     {stone.origin && <div><dt>Origin</dt><dd>{stone.origin}</dd></div>}
                     {stone.colour && <div><dt>Colour</dt><dd>{stone.colour}</dd></div>}
                     {stone.clarity && <div><dt>Clarity</dt><dd>{stone.clarity}</dd></div>}
+                    {stone.treatment && <div><dt>Treatment</dt><dd>{stone.treatment}</dd></div>}
+                    {stone.cut && <div><dt>Cut</dt><dd>{stone.cut}</dd></div>}
                   </dl>
+                  {stone.public_price && <p className="gem-category-stone__price">{stone.public_price}</p>}
+                  <Link className="gem-category-stone__enquire" to={"/stones/" + encodeURIComponent(stone.reference_code)}>
+                    View gemstone details <span aria-hidden="true">→</span>
+                  </Link>
                   <Link
                     className="gem-category-stone__enquire"
                     to={{ pathname: '/', search: `?enquiry=${encodeURIComponent(stone.reference_code)}`, hash: '#contact' }}
