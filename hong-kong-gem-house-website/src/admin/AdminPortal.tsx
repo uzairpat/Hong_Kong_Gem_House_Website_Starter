@@ -69,6 +69,7 @@ type Staff = {
   email: string | null;
   department: string | null;
   job_title: string | null;
+  phone: string | null;
   employment_status: string;
 };
 type Customer = {
@@ -347,6 +348,7 @@ export function AdminPortal() {
   const [showGemstoneForm, setShowGemstoneForm] = useState(false);
   const [editingGemstoneId, setEditingGemstoneId] = useState<string | null>(null);
   const [showStaffForm, setShowStaffForm] = useState(false);
+  const [editingStaffId, setEditingStaffId] = useState<string | null>(null);
   const [selectedEnquiry, setSelectedEnquiry] = useState<Enquiry | null>(null);
   const [enquiryNotes, setEnquiryNotes] = useState<Array<{ id: string; note: string; created_at: string }>>([]);
   const [noteDraft, setNoteDraft] = useState("");
@@ -358,7 +360,7 @@ export function AdminPortal() {
     certificationNumber: "", description: "", availabilityStatus: "available",
     acquisitionCost: "", sellingPrice: "", currencyCode: "", publicPriceMode: "hidden",
   });
-  const [staffForm, setStaffForm] = useState({ fullName: "", email: "", phone: "", department: "", jobTitle: "" });
+  const [staffForm, setStaffForm] = useState({ fullName: "", email: "", phone: "", department: "", jobTitle: "", employmentStatus: "active" });
 
   useEffect(() => {
     let mounted = true;
@@ -562,16 +564,35 @@ export function AdminPortal() {
     }
   };
 
+  const beginEditStaff = (person: Staff) => {
+    setEditingStaffId(person.id);
+    setStaffForm({
+      fullName: person.full_name,
+      email: person.email || "",
+      phone: person.phone || "",
+      department: person.department || "",
+      jobTitle: person.job_title || "",
+      employmentStatus: person.employment_status,
+    });
+    setFormMessage("");
+    setShowStaffForm(true);
+  };
+
   const saveStaff = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSaving(true);
     setFormMessage("");
+    const isEditing = Boolean(editingStaffId);
     try {
-      await apiRequest("/api/admin/staff", { method: "POST", body: JSON.stringify(staffForm) });
+      await apiRequest(
+        isEditing ? "/api/admin/staff/" + editingStaffId : "/api/admin/staff",
+        { method: isEditing ? "PATCH" : "POST", body: JSON.stringify(staffForm) },
+      );
       setShowStaffForm(false);
-      setStaffForm({ fullName: "", email: "", phone: "", department: "", jobTitle: "" });
+      setEditingStaffId(null);
+      setStaffForm({ fullName: "", email: "", phone: "", department: "", jobTitle: "", employmentStatus: "active" });
       await loadStaff();
-      setFormMessage("Staff record added. This does not create a portal login.");
+      setFormMessage(isEditing ? "Staff record updated." : "Staff record added. This does not create a portal login.");
     } catch (error) {
       setFormMessage(error instanceof Error ? error.message : "Could not save staff record.");
     } finally {
@@ -673,9 +694,9 @@ export function AdminPortal() {
     }
 
     if (section === "staff") {
-      return <><div className="admin-page-heading"><div><p className="admin-eyebrow">TEAM OPERATIONS</p><h1>Staff Directory</h1><p>Maintain employee details and assign work without granting portal login access.</p></div><button className="admin-button admin-button--primary" onClick={() => setShowStaffForm(true)}>＋ Add staff record</button></div>
-        <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Name</th><th>Role / Department</th><th>Email</th><th>Employment</th></tr></thead><tbody>{staff.map((item) => <tr key={item.id}><td><strong>{item.full_name}</strong></td><td>{item.job_title || "—"}<small>{item.department || "—"}</small></td><td>{item.email || "—"}</td><td><span className="admin-pill">{labelFor(item.employment_status)}</span></td></tr>)}{!staff.length && <tr><td colSpan={4}><EmptyState title="No staff records yet" text="Add employees here. A staff record does not create a login." /></td></tr>}</tbody></table></div>
-        {showStaffForm && <div className="admin-modal-backdrop" role="presentation"><section className="admin-modal admin-modal--narrow" role="dialog" aria-modal="true" aria-labelledby="staff-form-title"><div className="admin-panel__heading"><div><p className="admin-eyebrow">TEAM DIRECTORY</p><h2 id="staff-form-title">Add staff record</h2></div><button className="admin-icon-button" onClick={() => setShowStaffForm(false)} aria-label="Close">×</button></div><form className="admin-form" onSubmit={saveStaff}><label>Full name *<input required value={staffForm.fullName} onChange={(event) => setStaffForm({ ...staffForm, fullName: event.target.value })} /></label><label>Email<input type="email" value={staffForm.email} onChange={(event) => setStaffForm({ ...staffForm, email: event.target.value })} /></label><label>Phone<input value={staffForm.phone} onChange={(event) => setStaffForm({ ...staffForm, phone: event.target.value })} /></label><label>Job title<input value={staffForm.jobTitle} onChange={(event) => setStaffForm({ ...staffForm, jobTitle: event.target.value })} /></label><label>Department<input value={staffForm.department} onChange={(event) => setStaffForm({ ...staffForm, department: event.target.value })} /></label><p className="admin-form__helper">This creates a directory entry only. Employee login accounts are disabled in the owner-only first release.</p><div className="admin-form__actions"><button type="button" className="admin-button admin-button--secondary" onClick={() => setShowStaffForm(false)}>Cancel</button><button className="admin-button admin-button--primary" disabled={saving}>{saving ? "Saving…" : "Save staff record"}</button></div></form></section></div>}
+      return <><div className="admin-page-heading"><div><p className="admin-eyebrow">TEAM OPERATIONS</p><h1>Staff Directory</h1><p>Maintain employee details and assign work without granting portal login access.</p></div><button className="admin-button admin-button--primary" onClick={() => { setEditingStaffId(null); setStaffForm({ fullName: "", email: "", phone: "", department: "", jobTitle: "", employmentStatus: "active" }); setShowStaffForm(true); }}>＋ Add staff record</button></div>
+        <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Name</th><th>Role / Department</th><th>Email</th><th>Employment</th><th>Actions</th></tr></thead><tbody>{staff.map((item) => <tr key={item.id}><td><strong>{item.full_name}</strong><small>{item.phone || "No phone supplied"}</small></td><td>{item.job_title || "—"}<small>{item.department || "—"}</small></td><td>{item.email || "—"}</td><td><span className="admin-pill">{labelFor(item.employment_status)}</span></td><td><div className="admin-row-actions"><button onClick={() => beginEditStaff(item)}>Edit</button></div></td></tr>)}{!staff.length && <tr><td colSpan={5}><EmptyState title="No staff records yet" text="Add employees here. A staff record does not create a login." /></td></tr>}</tbody></table></div>
+        {showStaffForm && <div className="admin-modal-backdrop" role="presentation"><section className="admin-modal admin-modal--narrow" role="dialog" aria-modal="true" aria-labelledby="staff-form-title"><div className="admin-panel__heading"><div><p className="admin-eyebrow">TEAM DIRECTORY</p><h2 id="staff-form-title">{editingStaffId ? "Edit staff record" : "Add staff record"}</h2></div><button className="admin-icon-button" onClick={() => { setShowStaffForm(false); setEditingStaffId(null); }} aria-label="Close">×</button></div><form className="admin-form" onSubmit={saveStaff}><label>Full name *<input required value={staffForm.fullName} onChange={(event) => setStaffForm({ ...staffForm, fullName: event.target.value })} /></label><label>Email<input type="email" value={staffForm.email} onChange={(event) => setStaffForm({ ...staffForm, email: event.target.value })} /></label><label>Phone<input value={staffForm.phone} onChange={(event) => setStaffForm({ ...staffForm, phone: event.target.value })} /></label><label>Job title<input value={staffForm.jobTitle} onChange={(event) => setStaffForm({ ...staffForm, jobTitle: event.target.value })} /></label><label>Department<input value={staffForm.department} onChange={(event) => setStaffForm({ ...staffForm, department: event.target.value })} /></label><label>Employment status<select value={staffForm.employmentStatus} onChange={(event) => setStaffForm({ ...staffForm, employmentStatus: event.target.value })}><option value="active">Active</option><option value="inactive">Inactive</option><option value="on_leave">On leave</option></select></label><p className="admin-form__helper">This maintains a directory record only. Employee login accounts are disabled in the owner-only first release.</p><div className="admin-form__actions"><button type="button" className="admin-button admin-button--secondary" onClick={() => { setShowStaffForm(false); setEditingStaffId(null); }}>Cancel</button><button className="admin-button admin-button--primary" disabled={saving}>{saving ? "Saving…" : editingStaffId ? "Save changes" : "Save staff record"}</button></div></form></section></div>}
       </>;
     }
 
@@ -693,7 +714,7 @@ export function AdminPortal() {
     };
     const info = deferred[section] || deferred.settings;
     return <><div className="admin-page-heading"><div><p className="admin-eyebrow">CONFIGURATION / ROADMAP</p><h1>{selectedTitle}</h1><p>Planned module — not presented as live functionality.</p></div></div><section className="admin-deferred-panel"><span className="admin-deferred-icon">◇</span><h2>{info.title}</h2><p>{info.description}</p><ul>{info.items.map((item) => <li key={item}>{item}</li>)}</ul></section></>;
-  }, [checking, admin, section, dashboard, gemstones, enquiries, customers, staff, activity, pageError, search, enquirySearch, showGemstoneForm, editingGemstoneId, showStaffForm, saving, formMessage, gemstoneForm, staffForm, selectedEnquiry, enquiryNotes, noteDraft]);
+  }, [checking, admin, section, dashboard, gemstones, enquiries, customers, staff, activity, pageError, search, enquirySearch, showGemstoneForm, editingGemstoneId, showStaffForm, saving, formMessage, gemstoneForm, staffForm, editingStaffId, selectedEnquiry, enquiryNotes, noteDraft]);
 
   if (checking || !admin) {
     return <main className="admin-app"><div className="admin-loading">Loading owner portal…</div></main>;
