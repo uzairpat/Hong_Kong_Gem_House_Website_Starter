@@ -1,0 +1,87 @@
+name: Hong Kong Gem House verification
+
+on:
+  push:
+    branches:
+      - feature/admin-portal-mvp
+  pull_request:
+    branches:
+      - main
+      - feature/single-page-site-navigation
+
+jobs:
+  frontend:
+    name: Frontend typecheck and production build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+          cache-dependency-path: hong-kong-gem-house-website/package-lock.json
+      - name: Install frontend dependencies
+        working-directory: hong-kong-gem-house-website
+        run: npm ci
+      - name: Typecheck frontend
+        working-directory: hong-kong-gem-house-website
+        run: npm run typecheck
+      - name: Build frontend
+        working-directory: hong-kong-gem-house-website
+        run: npm run build
+
+  backend:
+    name: Backend typecheck, build and isolated database migration
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: hkg_admin_ci
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d hkg_admin_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      PORT: 4000
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hkg_admin_ci
+      DATABASE_SSL: "false"
+      CORS_ORIGIN: http://localhost:5173
+      SESSION_SECRET: ci-only-session-secret-do-not-use-in-any-real-environment
+      ADMIN_OWNER_EMAIL: ci-owner@hkg.test
+      ADMIN_OWNER_PASSWORD: CI-only-Owner-Password-Change-Me-123
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+      - name: Typecheck backend
+        working-directory: backend
+        run: npm run typecheck
+      - name: Build backend
+        working-directory: backend
+        run: npm run build
+      - name: Run migrations against isolated PostgreSQL
+        working-directory: backend
+        run: npm run migrate
+      - name: Verify one-time owner bootstrap
+        working-directory: backend
+        run: |
+          npm run admin:bootstrap
+          test "$(psql "$DATABASE_URL" -tAc "SELECT COUNT(*) FROM users WHERE account_type = 'admin' AND LOWER(email) = 'ci-owner@hkg.test'")" = "1"
+          test "$(psql "$DATABASE_URL" -tAc "SELECT COUNT(*) FROM admin_profiles ap JOIN users u ON u.id = ap.user_id WHERE u.account_type = 'admin' AND ap.mfa_required = TRUE AND ap.mfa_enabled_at IS NULL")" = "1"
