@@ -724,17 +724,17 @@ export function AdminPortal() {
               <label>Sourcing method<input value={gemstoneForm.sourcingMethod} onChange={(event)=>setGemstoneForm({...gemstoneForm,sourcingMethod:event.target.value})} placeholder="Direct sourcing, broker, etc." /></label>
               <label>Stock location<input value={gemstoneForm.stockLocation} onChange={(event)=>setGemstoneForm({...gemstoneForm,stockLocation:event.target.value})} /></label>
               <label>Acquisition date<input type="date" value={gemstoneForm.acquisitionDate} onChange={(event)=>setGemstoneForm({...gemstoneForm,acquisitionDate:event.target.value})} /></label>
-              <label className="admin-form__full">Description<textarea rows="3" value={gemstoneForm.description} onChange={(event)=>setGemstoneForm({...gemstoneForm,description:event.target.value})} /></label>
-              <label className="admin-form__full">Internal notes<textarea rows="3" value={gemstoneForm.internalNotes} onChange={(event)=>setGemstoneForm({...gemstoneForm,internalNotes:event.target.value})} /></label>
+              <label className="admin-form__full">Description<textarea rows={3} value={gemstoneForm.description} onChange={(event)=>setGemstoneForm({...gemstoneForm,description:event.target.value})} /></label>
+              <label className="admin-form__full">Internal notes<textarea rows={3} value={gemstoneForm.internalNotes} onChange={(event)=>setGemstoneForm({...gemstoneForm,internalNotes:event.target.value})} /></label>
               <p className="admin-form__helper admin-form__full">Acquisition cost, supplier details and internal notes are private. They are never returned by the public catalogue API.</p>
 
               <div className="admin-form__section-title">Public gemstone listing</div>
               <label>Public display title<input value={gemstoneForm.publicTitle} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicTitle:event.target.value})} placeholder="Defaults to gemstone name" /></label>
               <label>Public primary image URL<input type="url" value={gemstoneForm.imageUrl} onChange={(event)=>setGemstoneForm({...gemstoneForm,imageUrl:event.target.value})} placeholder="https://.../gemstone-image.jpg" /></label>
               {gemstoneForm.imageUrl && <div className="admin-gemstone-image-preview admin-form__full"><img src={gemstoneForm.imageUrl} alt="Gemstone image preview" onError={(event)=>{event.currentTarget.style.display="none";}} /><span>Preview of the primary public image</span></div>}
-              <label className="admin-form__full">Public description<textarea rows="4" value={gemstoneForm.publicDescription} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicDescription:event.target.value})} placeholder="Description displayed on the public gemstone page" /></label>
+              <label className="admin-form__full">Public description<textarea rows={4} value={gemstoneForm.publicDescription} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicDescription:event.target.value})} placeholder="Description displayed on the public gemstone page" /></label>
               <label>SEO title<input value={gemstoneForm.seoTitle} onChange={(event)=>setGemstoneForm({...gemstoneForm,seoTitle:event.target.value})} /></label>
-              <label>SEO description<textarea rows="2" value={gemstoneForm.seoDescription} onChange={(event)=>setGemstoneForm({...gemstoneForm,seoDescription:event.target.value})} /></label>
+              <label>SEO description<textarea rows={2} value={gemstoneForm.seoDescription} onChange={(event)=>setGemstoneForm({...gemstoneForm,seoDescription:event.target.value})} /></label>
               <label className="admin-form__full admin-checkbox-label"><input type="checkbox" checked={gemstoneForm.publicVisibility} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicVisibility:event.target.checked})} /> Allow this gemstone to appear in public collections after publication</label>
               <p className="admin-form__helper admin-form__full">The primary public image URL is shared with the website collection and gemstone detail page. Use a public HTTPS image URL. Managed image/video uploads and private certificate files will be added after the storage provider is selected. Never paste private certificate links here.</p>
 
