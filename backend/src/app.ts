@@ -109,7 +109,7 @@ const catalogueSelect = [
   "  g.origin_region,",
   "  g.availability_status,",
   "  g.public_price_mode,",
-  "  CASE WHEN g.public_price_mode = 'fixed' THEN g.selling_price::text ELSE NULL END AS public_price,",
+  "  CASE WHEN g.public_price_mode = 'fixed' THEN g.selling_price::text WHEN g.public_price_mode = 'enquiry' THEN 'Enquire for price' ELSE NULL END AS public_price,",
   "  g.is_sample,",
   "  g.created_at,",
   "  (SELECT gi.image_path FROM gemstone_images gi WHERE gi.gemstone_id = g.id ORDER BY gi.is_primary DESC, gi.sort_order ASC, gi.created_at ASC LIMIT 1) AS image_path",
