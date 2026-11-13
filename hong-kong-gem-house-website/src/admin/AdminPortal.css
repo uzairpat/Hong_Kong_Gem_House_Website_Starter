@@ -253,3 +253,9 @@
 
 .admin-option-add { align-self:flex-start;padding:3px 0;border:0;color:#96713a;background:transparent;font:600 9px/1.3 Arial,sans-serif;cursor:pointer; }
 .admin-option-add:hover { color:#624318;text-decoration:underline; }
+
+.admin-gemstone-image-preview { display:flex;align-items:center;gap:13px;min-height:94px;padding:11px;border:1px solid #e7dfd1;background:#faf7f0; }
+.admin-gemstone-image-preview img { width:90px;height:72px;object-fit:cover;border:1px solid #e5dac8;background:#f1ece2; }
+.admin-gemstone-image-preview span { color:#82745f;font:10px/1.5 Arial,sans-serif; }
+.admin-gemstone-thumb { width:46px;height:46px;object-fit:cover;border:1px solid #e7dfd1;background:#f7f3eb;vertical-align:middle; }
+.admin-gemstone-record { display:flex;align-items:center;gap:10px;min-width:180px; }
