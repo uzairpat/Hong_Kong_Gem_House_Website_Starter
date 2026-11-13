@@ -1531,7 +1531,7 @@ img { display: block; max-width: 100%; }
 
 
 /* Single-page composition and sticky section navigation */
-:root { --site-header-height: 106px; }
+:root { --site-header-height: 112px; }
 
 .site-header {
   position: sticky;
@@ -1548,7 +1548,7 @@ img { display: block; max-width: 100%; }
   display: block;
   width: 100%;
   min-width: 0;
-  scroll-margin-top: calc(var(--site-header-height) + 12px);
+  scroll-margin-top: 0;
 }
 
 @media (max-width: 1240px) {
