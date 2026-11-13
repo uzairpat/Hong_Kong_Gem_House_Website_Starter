@@ -69,6 +69,7 @@ const gemstoneCreateSchema = z.object({
   publicDescription: z.string().trim().max(8000).nullable().optional(),
   seoTitle: z.string().trim().max(180).nullable().optional(),
   seoDescription: z.string().trim().max(320).nullable().optional(),
+  imageUrl: z.string().trim().url().max(2048).nullable().optional().refine((value) => !value || /^https?:\/\//i.test(value), "Image URL must use HTTP or HTTPS."),
 });
 const gemstoneUpdateSchema = gemstoneCreateSchema.omit({ referenceCode: true }).partial();
 
@@ -580,6 +581,12 @@ router.post("/gemstones", async (request, response) => {
         input.seoDescription || null, request.session.admin!.id,
       ],
     );
+    if (input.imageUrl) {
+      await pool.query(
+        "INSERT INTO gemstone_images (gemstone_id, image_path, alt_text, sort_order, is_primary) VALUES ($1,$2,$3,0,TRUE) ON CONFLICT (gemstone_id, image_path) DO UPDATE SET is_primary = TRUE, sort_order = 0",
+        [result.rows[0].id, input.imageUrl, input.publicTitle || input.name],
+      );
+    }
     await recordAudit(request, "gemstone_created", "gemstone", result.rows[0].id, null, result.rows[0]);
     response.status(201).json({ data: result.rows[0] });
   } catch (error) {
@@ -617,6 +624,18 @@ router.patch("/gemstones/:id", async (request, response) => {
     return;
   }
   const entries = Object.entries(parsed.data).filter(([key]) => columns[key]);
+  if (Object.prototype.hasOwnProperty.call(parsed.data, "imageUrl")) {
+    const imageUrl = parsed.data.imageUrl;
+    if (imageUrl) {
+      await pool.query("UPDATE gemstone_images SET is_primary = FALSE WHERE gemstone_id = $1 AND is_primary = TRUE", [request.params.id]);
+      await pool.query(
+        "INSERT INTO gemstone_images (gemstone_id, image_path, alt_text, sort_order, is_primary) VALUES ($1,$2,$3,0,TRUE) ON CONFLICT (gemstone_id, image_path) DO UPDATE SET is_primary = TRUE, sort_order = 0",
+        [request.params.id, imageUrl, parsed.data.publicTitle || before.rows[0].public_title || before.rows[0].name],
+      );
+    } else {
+      await pool.query("DELETE FROM gemstone_images WHERE gemstone_id = $1 AND is_primary = TRUE", [request.params.id]);
+    }
+  }
   const values = entries.map(([, value]) => value === "" ? null : value);
   const assignments = entries.map(([key], index) => columns[key] + " = $" + (index + 1));
   values.push(request.session.admin!.id, request.params.id);
