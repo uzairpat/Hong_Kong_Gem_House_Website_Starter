@@ -378,7 +378,7 @@ export function AdminPortal() {
     acquisitionCost: "", sellingPrice: "", currencyCode: "", publicPriceMode: "hidden",
     cut: "", dimensionsMm: "", originRegion: "", sourcingMethod: "", supplierName: "",
     supplierReference: "", ownershipType: "owned", stockLocation: "", acquisitionDate: "",
-    internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "", publicVisibility: true,
+    internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "", publicVisibility: true, imageUrl: "",
   });
   const [staffForm, setStaffForm] = useState({ fullName: "", email: "", phone: "", department: "", jobTitle: "", employmentStatus: "active" });
 
@@ -496,6 +496,7 @@ export function AdminPortal() {
       internalNotes: gemstone.internal_notes || "", publicTitle: gemstone.public_title || "",
       publicDescription: gemstone.public_description || "", seoTitle: gemstone.seo_title || "",
       seoDescription: gemstone.seo_description || "",
+      imageUrl: gemstone.image_path || "",
     });
     setGemstoneStep(1);
     setFormMessage("");
@@ -513,6 +514,7 @@ export function AdminPortal() {
       sellingPrice: gemstoneForm.sellingPrice ? Number(gemstoneForm.sellingPrice) : null,
       currencyCode: gemstoneForm.currencyCode || null,
       acquisitionDate: gemstoneForm.acquisitionDate || null,
+      imageUrl: gemstoneForm.imageUrl.trim() || null,
     };
     try {
       if (editingGemstoneId) {
@@ -536,7 +538,7 @@ export function AdminPortal() {
         acquisitionCost: "", sellingPrice: "", currencyCode: "", publicPriceMode: "hidden",
         cut: "", dimensionsMm: "", originRegion: "", sourcingMethod: "", supplierName: "",
         supplierReference: "", ownershipType: "owned", stockLocation: "", acquisitionDate: "",
-        internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "", publicVisibility: true,
+        internalNotes: "", publicTitle: "", publicDescription: "", seoTitle: "", seoDescription: "", publicVisibility: true, imageUrl: "",
       });
       await loadGemstones();
       setFormMessage(editingGemstoneId ? "Gemstone details updated." : "Gemstone draft created.");
@@ -740,10 +742,12 @@ export function AdminPortal() {
                 <label>Public price mode<select value={gemstoneForm.publicPriceMode} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicPriceMode:event.target.value})}><option value="hidden">Hide price</option><option value="enquiry">Enquire for price</option><option value="fixed">Show fixed price</option></select></label>
                 <label className="admin-form__full">Public description<textarea rows={5} value={gemstoneForm.publicDescription} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicDescription:event.target.value})} placeholder="Description displayed on the public gemstone page" /></label>
                 <label className="admin-form__full">Internal description<textarea rows={3} value={gemstoneForm.description} onChange={(event)=>setGemstoneForm({...gemstoneForm,description:event.target.value})} /></label>
+                <label className="admin-form__full">Public primary image URL<input type="url" value={gemstoneForm.imageUrl} onChange={(event)=>setGemstoneForm({...gemstoneForm,imageUrl:event.target.value})} placeholder="https://…" /></label>
+                {gemstoneForm.imageUrl && <div className="admin-gemstone-image-preview admin-form__full"><img src={gemstoneForm.imageUrl} alt="Gemstone image preview" onError={(event)=>{event.currentTarget.style.display="none";}} /><span>Preview of the primary public image</span></div>}
                 <label>SEO title<input value={gemstoneForm.seoTitle} onChange={(event)=>setGemstoneForm({...gemstoneForm,seoTitle:event.target.value})} /></label>
                 <label>SEO description<textarea rows={2} value={gemstoneForm.seoDescription} onChange={(event)=>setGemstoneForm({...gemstoneForm,seoDescription:event.target.value})} /></label>
                 <label className="admin-form__full admin-checkbox-label"><input type="checkbox" checked={gemstoneForm.publicVisibility} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicVisibility:event.target.checked})} /> Allow this gemstone to appear in public collections after publication</label>
-                <p className="admin-form__helper admin-form__full">Image and video files and private certificate uploads will be enabled after the storage provider is selected. Do not paste private certificate links here.</p>
+                <p className="admin-form__helper admin-form__full">The primary public image URL is shared with the website collection and gemstone detail page. This is a temporary URL-based bridge; managed image/video uploads and private certificate files will follow after the storage provider is selected. Never paste private certificate links here.</p>
               </>}
               <div className="admin-form__actions admin-form__full">
                 <button type="button" className="admin-button admin-button--secondary" onClick={()=>gemstoneStep===1?setShowGemstoneForm(false):setGemstoneStep((step)=>step-1)}>{gemstoneStep===1?"Cancel":"Back"}</button>
