@@ -23,6 +23,7 @@ function RouteScrollManager() {
 export default function App() {
   return <div className="site-shell">
     <SiteHeader />
+    <RouteScrollManager />
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/our-heritage" element={<HeritagePage />} />
