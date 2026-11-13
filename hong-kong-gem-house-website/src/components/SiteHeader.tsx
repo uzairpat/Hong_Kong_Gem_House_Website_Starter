@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import BrandMark from './BrandMark';
+import { scrollToPageSection } from './sectionScroll';
 import { useCustomerAuth } from '../contexts/CustomerAuthContext';
 
 const navItems = [
@@ -88,10 +89,10 @@ export default function SiteHeader() {
       return;
     }
 
-    document.getElementById(sectionId)?.scrollIntoView({
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-      block: 'start',
-    });
+    scrollToPageSection(
+      sectionId,
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    );
   };
 
   const handleLogout = async () => {
