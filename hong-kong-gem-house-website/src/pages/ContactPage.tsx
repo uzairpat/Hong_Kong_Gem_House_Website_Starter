@@ -149,9 +149,9 @@ export default function ContactPage({ embedded = false }: { embedded?: boolean }
     setForm((current) => ({
       ...current,
       type: current.type || "Gemstone Enquiry",
-      message: current.message.trim() && !current.message.includes(safeReference)
-        ? current.message
-        : `I would like to enquire about ${safeReference}.`,
+      message: !current.message.trim() || current.message.startsWith("I would like to enquire about ")
+        ? `I would like to enquire about ${safeReference}.`
+        : current.message,
     }));
     setSent(false);
     setEnquiryNumber("");
