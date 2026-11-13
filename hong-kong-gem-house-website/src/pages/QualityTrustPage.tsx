@@ -76,9 +76,10 @@ const approachPoints = [
   },
 ];
 
-export default function QualityTrustPage() {
+export default function QualityTrustPage({ embedded = false }: { embedded?: boolean }) {
+  const PageRoot = embedded ? 'div' : 'main';
   return (
-    <main className="quality-page">
+    <PageRoot className="quality-page">
       <section className="quality-hero">
         <img
           className="quality-hero__background"
@@ -162,10 +163,16 @@ export default function QualityTrustPage() {
 
       <div className="quality-cta">
         <span>Have questions about a gemstone?</span>
-        <Link to="/contact" className="button button--gold">
-          Speak With Our Team <span>→</span>
-        </Link>
+        {embedded ? (
+          <a href="#contact" className="button button--gold">
+            Speak With Our Team <span>→</span>
+          </a>
+        ) : (
+          <Link to="/contact" className="button button--gold">
+            Speak With Our Team <span>→</span>
+          </Link>
+        )}
       </div>
-    </main>
+    </PageRoot>
   );
 }

@@ -450,3 +450,40 @@
   .gemstone-collection__link,
   .gemstone-collection__link span:last-child { transition: none; }
 }
+
+
+/* The entire gemstone category column is one accessible collection link. */
+.gemstone-collection {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  outline-offset: 5px;
+  transition: background .2s ease;
+}
+.gemstone-collection:focus-visible {
+  outline: 2px solid #a8752e;
+}
+.gemstone-collection__image {
+  transition: filter .22s ease, transform .22s ease;
+}
+.gemstone-collection:hover .gemstone-collection__image {
+  filter: brightness(1.06) saturate(1.05);
+}
+.gemstone-collection__link {
+  pointer-events: none;
+}
+.gemstone-collection:hover .gemstone-collection__link {
+  color: #fffaf1;
+  border-color: #a8752e;
+  background: #a8752e;
+}
+.gemstone-collection:hover .gemstone-collection__link span:last-child {
+  color: #fffaf1;
+  transform: translateX(4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .gemstone-collection,
+  .gemstone-collection__image {
+    transition: none;
+  }
+}

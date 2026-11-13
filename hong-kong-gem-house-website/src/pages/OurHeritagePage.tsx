@@ -146,9 +146,10 @@ function CompactTimeline() {
   );
 }
 
-export default function OurHeritagePage() {
+export default function OurHeritagePage({ embedded = false }: { embedded?: boolean }) {
+  const PageRoot = embedded ? 'div' : 'main';
   return (
-    <main className="heritage-final">
+    <PageRoot className="heritage-final">
       <section className="heritage-final-hero" aria-labelledby="heritage-final-title">
         <div className="heritage-final-hero__copy">
           <p className="heritage-final-eyebrow">
@@ -217,6 +218,6 @@ export default function OurHeritagePage() {
           />
         </div>
       </section>
-    </main>
+    </PageRoot>
   );
 }

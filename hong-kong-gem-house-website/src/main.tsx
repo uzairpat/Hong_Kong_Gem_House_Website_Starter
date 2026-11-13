@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import { CustomerAuthProvider } from './contexts/CustomerAuthContext';
 import './styles.css';
 
 const rootElement = document.getElementById('root');
@@ -13,7 +14,9 @@ if (!rootElement) {
 createRoot(rootElement).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <CustomerAuthProvider>
+        <App />
+      </CustomerAuthProvider>
     </BrowserRouter>
   </StrictMode>,
 );
