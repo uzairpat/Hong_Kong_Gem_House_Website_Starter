@@ -724,9 +724,9 @@ export function AdminPortal() {
               <label>Sourcing method<input value={gemstoneForm.sourcingMethod} onChange={(event)=>setGemstoneForm({...gemstoneForm,sourcingMethod:event.target.value})} placeholder="Direct sourcing, broker, etc." /></label>
               <label>Stock location<input value={gemstoneForm.stockLocation} onChange={(event)=>setGemstoneForm({...gemstoneForm,stockLocation:event.target.value})} /></label>
               <label>Acquisition date<input type="date" value={gemstoneForm.acquisitionDate} onChange={(event)=>setGemstoneForm({...gemstoneForm,acquisitionDate:event.target.value})} /></label>
-              <label className="admin-form__full">Internal description<textarea rows="3" value={gemstoneForm.description} onChange={(event)=>setGemstoneForm({...gemstoneForm,description:event.target.value})} /></label>
+              <label className="admin-form__full">Description<textarea rows="3" value={gemstoneForm.description} onChange={(event)=>setGemstoneForm({...gemstoneForm,description:event.target.value})} /></label>
               <label className="admin-form__full">Internal notes<textarea rows="3" value={gemstoneForm.internalNotes} onChange={(event)=>setGemstoneForm({...gemstoneForm,internalNotes:event.target.value})} /></label>
-              <p className="admin-form__helper admin-form__full">Acquisition cost, supplier details, internal description and notes are private. They are never returned by the public catalogue API.</p>
+              <p className="admin-form__helper admin-form__full">Acquisition cost, supplier details and internal notes are private. They are never returned by the public catalogue API.</p>
 
               <div className="admin-form__section-title">Public gemstone listing</div>
               <label>Public display title<input value={gemstoneForm.publicTitle} onChange={(event)=>setGemstoneForm({...gemstoneForm,publicTitle:event.target.value})} placeholder="Defaults to gemstone name" /></label>
