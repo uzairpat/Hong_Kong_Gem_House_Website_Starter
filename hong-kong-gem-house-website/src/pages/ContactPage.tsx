@@ -88,21 +88,25 @@ function DetailIcon({ name }: { name: 'location-pin' | 'building' | 'phone' | 'e
 const specializationGems = [
   {
     label: 'Ruby',
+    slug: 'ruby',
     image: '/assets/homepage-elements/gemstones/ruby-transparent.png',
     alt: 'Red ruby gemstone',
   },
   {
     label: 'Blue Sapphire',
+    slug: 'blue-sapphire',
     image: '/assets/homepage-elements/gemstones/blue-sapphire-transparent.png',
     alt: 'Blue sapphire gemstone',
   },
   {
     label: 'Emerald',
+    slug: 'emerald',
     image: '/assets/homepage-elements/gemstones/emerald-transparent.png',
     alt: 'Green emerald gemstone',
   },
   {
     label: 'Rare Gems',
+    slug: 'rare-gemstones',
     image: '/assets/homepage-elements/gemstones/rare-star-gem-transparent.png',
     alt: 'Rare star-shaped gemstone',
   },
@@ -343,10 +347,16 @@ export default function ContactPage({ embedded = false }: { embedded?: boolean }
           <h2>Our Specialization</h2>
           <div className="contact-footer__gems">
             {specializationGems.map((gem) => (
-              <div className="contact-footer-gem" key={gem.label}>
-                <img src={gem.image} alt={gem.alt} />
+              <Link
+                className="contact-footer-gem"
+                key={gem.label}
+                to={`/collections/${gem.slug}`}
+                aria-label={`Explore the ${gem.label} collection`}
+                title={`Explore ${gem.label}`}
+              >
+                <img src={gem.image} alt="" aria-hidden="true" />
                 <span>{gem.label}</span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
