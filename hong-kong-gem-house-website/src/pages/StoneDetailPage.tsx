@@ -37,11 +37,13 @@ export default function StoneDetailPage() {
   const [stone, setStone] = useState<PublicGemstone | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [imageFailed, setImageFailed] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
     setError('');
+    setImageFailed(false);
     fetch(API_BASE_URL + '/api/gemstones/' + encodeURIComponent(stoneId), {
       signal: controller.signal,
       headers: { Accept: 'application/json' },
@@ -86,7 +88,7 @@ export default function StoneDetailPage() {
       <section className="product-main page-pad" aria-label="Gemstone details">
         <div className="product-gallery">
           <div className="product-gallery__main">
-            {stone.image_path ? <img src={stone.image_path} alt={title} /> : <div className="rbc-image-fallback">Hong Kong Gem House</div>}
+            {stone.image_path && !imageFailed ? <img src={stone.image_path} alt={title} onError={() => setImageFailed(true)} /> : <div className="rbc-image-fallback">Gemstone image unavailable</div>}
           </div>
           <p className="product-gallery__note">Gemstone imagery is supplied by Hong Kong Gem House. Contact our team for additional views.</p>
         </div>
@@ -98,7 +100,7 @@ export default function StoneDetailPage() {
         </div>
         <aside className="product-action-card" aria-label="Enquiry and availability">
           <div className="availability"><span>Availability</span><strong><i aria-hidden="true" />{label(stone.availability_status)}</strong></div>
-          {stone.public_price_mode === 'fixed' && stone.public_price && <p className="product-specs__price">{stone.public_price}</p>}
+          {stone.public_price && <p className="product-specs__price">{stone.public_price}</p>}
           <Link className="button button--gold product-action-card__enquire" to={{ pathname: '/', search: '?enquiry=' + encodeURIComponent(stone.reference_code), hash: '#contact' }}>Enquire About This Gemstone <span>→</span></Link>
           <p>Our team can provide further information, certification details and current availability on request.</p>
         </aside>
