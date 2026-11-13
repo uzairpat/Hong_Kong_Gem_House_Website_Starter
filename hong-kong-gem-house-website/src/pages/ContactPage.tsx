@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import './ContactPage.css';
 
@@ -142,6 +142,21 @@ export default function ContactPage({ embedded = false }: { embedded?: boolean }
     type: '',
     message: enquiryRef ? `I would like to enquire about ${enquiryRef}.` : '',
   });
+
+  useEffect(() => {
+    const safeReference = /^[A-Za-z0-9-]{3,32}$/.test(enquiryRef) ? enquiryRef : "";
+    if (!safeReference) return;
+    setForm((current) => ({
+      ...current,
+      type: current.type || "Gemstone Enquiry",
+      message: current.message.trim() && !current.message.includes(safeReference)
+        ? current.message
+        : `I would like to enquire about ${safeReference}.`,
+    }));
+    setSent(false);
+    setEnquiryNumber("");
+    setSubmitError("");
+  }, [enquiryRef]);
 
   const update = (field: ContactField, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
