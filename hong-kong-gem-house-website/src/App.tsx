@@ -1,4 +1,5 @@
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import SiteHeader from './components/SiteHeader';
 import HomePage from './pages/HomePage';
 import HeritagePage from './pages/HeritagePage';
@@ -8,6 +9,16 @@ import StoneDetailPage from './pages/StoneDetailPage';
 import QualityTrustPage from './pages/QualityTrustPage';
 import GlobalPresencePage from './pages/GlobalPresencePage';
 import ContactPage from './pages/ContactPage';
+
+function RouteScrollManager() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [pathname]);
+
+  return null;
+}
 
 export default function App() {
   return <div className="site-shell">
