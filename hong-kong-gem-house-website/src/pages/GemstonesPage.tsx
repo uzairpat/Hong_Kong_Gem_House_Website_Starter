@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './GemstonesPage.css';
 
 type AssetImageProps = {
@@ -128,7 +129,8 @@ const features = [
   },
 ];
 
-export default function GemstonesPage() {
+export default function GemstonesPage({ embedded = false }: { embedded?: boolean }) {
+  const PageRoot = embedded ? 'div' : 'main';
   const heroCandidates = [
     `${ASSET_ROOT}/a_wide_high_resolution_horizontal_luxury_backgro.png`,
     `${ASSET_ROOT}/a_wide_high_resolution_horizontal_luxury_background.png`,
@@ -149,7 +151,7 @@ export default function GemstonesPage() {
   ];
 
   return (
-    <main className="gemstones-page">
+    <PageRoot className="gemstones-page">
       <section className="gemstones-hero" aria-labelledby="gemstones-title">
         <AssetImage
           candidates={heroCandidates}
@@ -180,7 +182,12 @@ export default function GemstonesPage() {
         />
         <div className="gemstone-collections__grid">
           {collections.map((collection) => (
-            <article className="gemstone-collection" key={collection.slug}>
+            <Link
+              className="gemstone-collection"
+              key={collection.slug}
+              to={`/collections/${collection.slug}`}
+              aria-label={`View the ${collection.name} collection`}
+            >
               <AssetImage
                 candidates={collection.image}
                 alt={`${collection.name} gemstone collection`}
@@ -194,11 +201,11 @@ export default function GemstonesPage() {
                 </div>
                 <p className="gemstone-collection__descriptor">{collection.descriptor}</p>
                 <p className="gemstone-collection__description">{collection.description}</p>
-                <a className="gemstone-collection__link" href={`/collections/${collection.slug}`}>
-                  <span>View Collection</span><span aria-hidden="true">→</span>
-                </a>
+                <span className="gemstone-collection__link" aria-hidden="true">
+                  <span>View Collection</span><span>→</span>
+                </span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>
@@ -233,6 +240,6 @@ export default function GemstonesPage() {
           <span aria-hidden="true" />
         </blockquote>
       </section>
-    </main>
+    </PageRoot>
   );
 }

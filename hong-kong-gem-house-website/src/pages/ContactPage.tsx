@@ -1,10 +1,11 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import './ContactPage.css';
 
 type ContactField = 'name' | 'company' | 'email' | 'phone' | 'type' | 'message';
 
 const asset = '/assets/08-contact';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000').replace(/\/$/, '');
 
 const enquiryCategories = [
   {
@@ -88,21 +89,25 @@ function DetailIcon({ name }: { name: 'location-pin' | 'building' | 'phone' | 'e
 const specializationGems = [
   {
     label: 'Ruby',
+    slug: 'ruby',
     image: '/assets/homepage-elements/gemstones/ruby-transparent.png',
     alt: 'Red ruby gemstone',
   },
   {
     label: 'Blue Sapphire',
+    slug: 'blue-sapphire',
     image: '/assets/homepage-elements/gemstones/blue-sapphire-transparent.png',
     alt: 'Blue sapphire gemstone',
   },
   {
     label: 'Emerald',
+    slug: 'emerald',
     image: '/assets/homepage-elements/gemstones/emerald-transparent.png',
     alt: 'Green emerald gemstone',
   },
   {
     label: 'Rare Gems',
+    slug: 'rare-gemstones',
     image: '/assets/homepage-elements/gemstones/rare-star-gem-transparent.png',
     alt: 'Rare star-shaped gemstone',
   },
@@ -125,10 +130,14 @@ function SocialMark({ kind }: { kind: 'linkedin' | 'instagram' | 'youtube' }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="3"/><path d="m10 9 5 3-5 3Z" fill="currentColor" stroke="none" /></svg>;
 }
 
-export default function ContactPage() {
+export default function ContactPage({ embedded = false }: { embedded?: boolean }) {
+  const PageRoot = embedded ? 'div' : 'main';
   const [params] = useSearchParams();
   const enquiryRef = params.get('enquiry') || '';
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [enquiryNumber, setEnquiryNumber] = useState('');
   const [form, setForm] = useState({
     name: '',
     company: '',
@@ -138,17 +147,75 @@ export default function ContactPage() {
     message: enquiryRef ? `I would like to enquire about ${enquiryRef}.` : '',
   });
 
+  useEffect(() => {
+    const safeReference = /^[A-Za-z0-9-]{3,32}$/.test(enquiryRef) ? enquiryRef : "";
+    if (!safeReference) return;
+    setForm((current) => ({
+      ...current,
+      type: current.type || "Gemstone Enquiry",
+      message: !current.message.trim() || current.message.startsWith("I would like to enquire about ")
+        ? `I would like to enquire about ${safeReference}.`
+        : current.message,
+    }));
+    setSent(false);
+    setEnquiryNumber("");
+    setSubmitError("");
+  }, [enquiryRef]);
+
   const update = (field: ContactField, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
   };
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSent(true);
+    setSubmitError('');
+    setSubmitting(true);
+    try {
+      const csrfResponse = await fetch(`${API_BASE_URL}/api/auth/csrf`, {
+        credentials: 'include',
+        headers: { Accept: 'application/json' },
+      });
+      const csrfResult = await csrfResponse.json().catch(() => ({})) as { csrfToken?: string };
+      if (!csrfResponse.ok || !csrfResult.csrfToken) {
+        throw new Error('We could not securely submit your enquiry. Please refresh and try again.');
+      }
+
+      const reference = /^[A-Za-z0-9-]{3,32}$/.test(enquiryRef) ? enquiryRef : '';
+      const response = await fetch(`${API_BASE_URL}/api/enquiries`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfResult.csrfToken,
+        },
+        body: JSON.stringify({
+          name: form.name,
+          company: form.company,
+          email: form.email,
+          phone: form.phone,
+          type: form.type,
+          message: form.message,
+          gemstoneReference: reference,
+          sourcePath: window.location.pathname + window.location.search,
+        }),
+      });
+      const result = await response.json().catch(() => ({})) as {
+        error?: string;
+        enquiry?: { enquiry_number?: string };
+      };
+      if (!response.ok) throw new Error(result.error || 'We could not submit your enquiry. Please try again.');
+      setEnquiryNumber(result.enquiry?.enquiry_number || '');
+      setSent(true);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'We could not submit your enquiry. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <main className="contact-page">
+    <PageRoot className="contact-page">
       <section className="contact-hero" aria-label="Contact Hong Kong Gem House">
         <div className="contact-hero__intro">
           <p className="eyebrow eyebrow--line">Contact &amp; Enquiries</p>
@@ -177,7 +244,8 @@ export default function ContactPage() {
             <div className="contact-form-success" role="status" aria-live="polite">
               <span className="contact-form-success__check" aria-hidden="true">✓</span>
               <h3>Thank you for your enquiry.</h3>
-              <p>Your details have been validated. The form still needs to be connected to the company email or CRM to deliver enquiries.</p>
+              <p>Your message has been safely recorded in our enquiry system. Our team will review it and follow up with you.</p>
+              {enquiryNumber && <p className="contact-form-success__reference">Enquiry reference: <strong>{enquiryNumber}</strong></p>}
               <button type="button" className="contact-form-card__reset" onClick={() => setSent(false)}>
                 Send another message
               </button>
@@ -259,8 +327,9 @@ export default function ContactPage() {
                 placeholder="Your Message *"
               />
 
-              <button type="submit" className="contact-form-card__submit">
-                Send Enquiry <span aria-hidden="true">→</span>
+              {submitError && <p className="contact-form-error" role="alert">{submitError}</p>}
+              <button type="submit" className="contact-form-card__submit" disabled={submitting}>
+                {submitting ? 'Submitting…' : 'Send Enquiry'} <span aria-hidden="true">→</span>
               </button>
             </>
           )}
@@ -303,30 +372,55 @@ export default function ContactPage() {
 
       <footer className="contact-footer">
         <div className="contact-footer__brand">
-          <Link to="/" className="contact-footer__brandline" aria-label="Hong Kong Gem House home">
-            <img src="/assets/01-homepage/hkg-logo-emblem.png" alt="Hong Kong Gem House emblem" />
-            <span>
-              <strong>Hong Kong Gem House Limited</strong>
-              <small>Est. 1959</small>
-            </span>
-          </Link>
+          {embedded ? (
+            <a href="#home" className="contact-footer__brandline" aria-label="Hong Kong Gem House home">
+              <img src="/assets/01-homepage/hkg-logo-emblem.png" alt="Hong Kong Gem House emblem" />
+              <span>
+                <strong>Hong Kong Gem House Limited</strong>
+                <small>Est. 1959</small>
+              </span>
+            </a>
+          ) : (
+            <Link to="/" className="contact-footer__brandline" aria-label="Hong Kong Gem House home">
+              <img src="/assets/01-homepage/hkg-logo-emblem.png" alt="Hong Kong Gem House emblem" />
+              <span>
+                <strong>Hong Kong Gem House Limited</strong>
+                <small>Est. 1959</small>
+              </span>
+            </Link>
+          )}
           <p>Carrying the Wavoo &amp; Vilak legacy of gemstone excellence from source to city.</p>
           <span className="contact-footer__accent" aria-hidden="true" />
         </div>
 
         <nav className="contact-footer__links" aria-label="Footer quick links">
           <h2>Quick Links</h2>
-          {quickLinks.map(([label, to]) => <Link key={to} to={to}>{label}</Link>)}
+          {quickLinks.map(([label, to]) => embedded
+            ? <a key={to} href={({
+                "/": "#home",
+                "/our-heritage": "#our-heritage",
+                "/our-gemstones": "#our-gemstones",
+                "/quality-trust": "#quality-trust",
+                "/global-presence": "#global-presence",
+                "/contact": "#contact",
+              } as Record<string, string>)[to]}>{label}</a>
+            : <Link key={to} to={to}>{label}</Link>)}
         </nav>
 
         <div className="contact-footer__specialization">
           <h2>Our Specialization</h2>
           <div className="contact-footer__gems">
             {specializationGems.map((gem) => (
-              <div className="contact-footer-gem" key={gem.label}>
-                <img src={gem.image} alt={gem.alt} />
+              <Link
+                className="contact-footer-gem"
+                key={gem.label}
+                to={`/collections/${gem.slug}`}
+                aria-label={`Explore the ${gem.label} collection`}
+                title={`Explore ${gem.label}`}
+              >
+                <img src={gem.image} alt="" aria-hidden="true" />
                 <span>{gem.label}</span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -349,6 +443,6 @@ export default function ContactPage() {
           © 2026 Hong Kong Gem House Limited. All rights reserved.
         </div>
       </footer>
-    </main>
+    </PageRoot>
   );
 }

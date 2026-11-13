@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 const assetRoot = '/assets/homepage-elements';
 
 const specialtyGems = [
-  { name: 'Ruby', src: `${assetRoot}/gemstones/ruby-transparent.png` },
-  { name: 'Blue sapphire', src: `${assetRoot}/gemstones/blue-sapphire-transparent.png` },
-  { name: 'Emerald', src: `${assetRoot}/gemstones/emerald-transparent.png` },
-  { name: 'Rare gemstone', src: `${assetRoot}/gemstones/rare-star-gem-transparent.png` },
+  { name: 'Ruby', slug: 'ruby', src: `${assetRoot}/gemstones/ruby-transparent.png` },
+  { name: 'Blue sapphire', slug: 'blue-sapphire', src: `${assetRoot}/gemstones/blue-sapphire-transparent.png` },
+  { name: 'Emerald', slug: 'emerald', src: `${assetRoot}/gemstones/emerald-transparent.png` },
+  { name: 'Rare gemstone', slug: 'rare-gemstones', src: `${assetRoot}/gemstones/rare-star-gem-transparent.png` },
 ];
 
 const pillars = [
@@ -36,9 +36,10 @@ const pillars = [
   },
 ];
 
-export default function HomePage() {
+export default function HomePage({ embedded = false }: { embedded?: boolean }) {
+  const PageRoot = embedded ? 'div' : 'main';
   return (
-    <main className="home-page">
+    <PageRoot className="home-page">
       <section className="home-hero home-hero--composite" aria-labelledby="home-title">
         <div className="home-hero__content">
           <p className="eyebrow eyebrow--line">Hong Kong Gem House Limited</p>
@@ -48,13 +49,29 @@ export default function HomePage() {
           </p>
           <div className="home-hero__gem-row" aria-label="Our gemstone specialities">
             {specialtyGems.map((gem) => (
-              <img key={gem.name} src={gem.src} alt={gem.name} title={gem.name} />
+              <Link
+                key={gem.name}
+                className="home-hero__gem-link"
+                to={`/collections/${gem.slug}`}
+                aria-label={`Explore the ${gem.name} collection`}
+                title={`Explore ${gem.name}`}
+              >
+                <img src={gem.src} alt={gem.name} />
+              </Link>
             ))}
           </div>
           <p className="home-hero__specialty">Specializing in: Ruby, Blue Sapphire, Emerald &amp; Rare Gems</p>
           <div className="hero-actions">
-            <Link className="button button--gold" to="/contact">Enquire About Gemstones <span aria-hidden="true">→</span></Link>
-            <Link className="button button--outline" to="/our-heritage">Our Heritage <span aria-hidden="true">→</span></Link>
+            {embedded ? (
+              <a className="button button--gold" href="#contact">Enquire About Gemstones <span aria-hidden="true">→</span></a>
+            ) : (
+              <Link className="button button--gold" to="/contact">Enquire About Gemstones <span aria-hidden="true">→</span></Link>
+            )}
+            {embedded ? (
+              <a className="button button--outline" href="#our-heritage">Our Heritage <span aria-hidden="true">→</span></a>
+            ) : (
+              <Link className="button button--outline" to="/our-heritage">Our Heritage <span aria-hidden="true">→</span></Link>
+            )}
           </div>
         </div>
       </section>
@@ -70,6 +87,6 @@ export default function HomePage() {
           </article>
         ))}
       </section>
-    </main>
+    </PageRoot>
   );
 }

@@ -586,3 +586,46 @@
   .contact-office__photo { height: 144px; }
   .contact-office__details p { font-size: 10px; }
 }
+
+
+/* Enquiry form backend submission states */
+.contact-form-card__submit:disabled { opacity: .65; cursor: wait; }
+.contact-form-error {
+  margin: 0;
+  padding: 9px 11px;
+  border: 1px solid rgba(154, 71, 57, .35);
+  color: #913f34;
+  background: rgba(255, 245, 241, .94);
+  font: 12px/1.5 Arial, sans-serif;
+}
+.contact-form-success__reference {
+  margin-top: 12px !important;
+  color: #715126 !important;
+  font-weight: 600 !important;
+}
+
+
+/* Footer gemstone specialities are collection links, not decorative images. */
+.contact-footer-gem {
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: transform .18s ease, color .18s ease;
+}
+.contact-footer-gem img {
+  transition: transform .18s ease, filter .18s ease;
+}
+.contact-footer-gem:hover {
+  transform: translateY(-3px);
+}
+.contact-footer-gem:hover img {
+  transform: scale(1.08);
+  filter: drop-shadow(0 3px 6px rgba(217, 173, 101, .32));
+}
+.contact-footer-gem:hover span {
+  color: #d9ad65;
+}
+.contact-footer-gem:focus-visible {
+  outline: 2px solid #d9ad65;
+  outline-offset: 4px;
+}
