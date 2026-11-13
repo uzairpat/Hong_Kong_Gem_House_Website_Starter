@@ -182,6 +182,7 @@ export default function GemstoneCategoryCollectionPage({ slug }: { slug: Categor
                   <p className="gem-category-stone__reference">{stone.reference_code}</p>
                   <h3>{stone.public_title || stone.name}</h3>
                   {stone.public_description && <p className="gem-category-stone__description">{stone.public_description}</p>}
+                  <p className="gem-category-stone__availability"><span>Availability</span><strong>{(stone.availability_status || "unavailable").replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase())}</strong></p>
                   <dl>
                     {stone.weight_carat !== null && <div><dt>Weight</dt><dd>{Number(stone.weight_carat).toFixed(2)} ct</dd></div>}
                     {stone.shape && <div><dt>Shape</dt><dd>{stone.shape}</dd></div>}
