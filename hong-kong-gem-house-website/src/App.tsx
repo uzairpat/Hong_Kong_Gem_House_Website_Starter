@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import SiteHeader from './components/SiteHeader';
 import WhatsAppButton from './components/WhatsAppButton';
+import { scrollToPageSection } from './components/sectionScroll';
 import SinglePageHomePage from './pages/SinglePageHomePage';
 import GemstoneCollectionRoute from './pages/GemstoneCollectionRoute';
 import StoneDetailPage from './pages/StoneDetailPage';
@@ -30,14 +31,23 @@ function HashScrollManager() {
     if (pathname !== '/' || !hash) return;
 
     const sectionId = decodeURIComponent(hash.slice(1));
-    const frame = window.requestAnimationFrame(() => {
-      document.getElementById(sectionId)?.scrollIntoView({
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-        block: 'start',
+    const behavior: ScrollBehavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? 'auto'
+      : 'smooth';
+
+    // Wait for the route render to settle before measuring the destination section.
+    let firstFrame = 0;
+    let secondFrame = 0;
+    firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        scrollToPageSection(sectionId, behavior);
       });
     });
 
-    return () => window.cancelAnimationFrame(frame);
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+    };
   }, [pathname, hash]);
 
   return null;
